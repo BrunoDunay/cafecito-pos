@@ -9,7 +9,8 @@ export const getCustomers = async (req, res) => {
     ? {
         $or: [
           { name: { $regex: q, $options: "i" } },
-          { phoneOrEmail: { $regex: q, $options: "i" } },
+          { email: { $regex: q, $options: "i" } },
+          { phone: { $regex: q, $options: "i" } },
         ],
       }
     : {};
@@ -23,6 +24,7 @@ export const getCustomers = async (req, res) => {
 
   res.json({ data: customers, total, page, limit });
 };
+
 
 /* Crear nuevo cliente */
 export const createCustomer = async (req, res) => {

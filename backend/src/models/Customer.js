@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const customerSchema = new mongoose.Schema(
   {
@@ -7,31 +7,38 @@ const customerSchema = new mongoose.Schema(
       required: true,
       trim: true,
       minlength: 2,
-      maxlength: 100
+      maxlength: 100,
     },
 
-    phoneOrEmail: {
+    email: {
       type: String,
       required: true,
       unique: true,
       lowercase: true,
-      trim: true
+      trim: true,
+      match: [/^\S+@\S+\.\S+$/, "Invalid email"],
+    },
+
+    phone: {
+      type: String,
+      required: false,
+      trim: true,
     },
 
     purchasesCount: {
       type: Number,
       default: 0,
-      min: 0
+      min: 0,
     },
 
     isActive: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
-export default mongoose.model('Customer', customerSchema);
+export default mongoose.model("Customer", customerSchema);
