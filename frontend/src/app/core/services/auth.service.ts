@@ -1,23 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../enviroments/enviroment';
-import { map, tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 
-import { loginResponseSchema } from '../types/auth';
+import { loginResponseSchema, AuthUser } from '../types/auth';
 import { UserCredentials } from '../types/user';
 
-type AuthUser = {
-  id: string;
-  name: string;
-  email: string;
-  role: 'admin' | 'seller';
-};
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   private apiUrl = `${environment.apiUrl}/auth`;
 
   constructor(private http: HttpClient) {}
@@ -26,16 +18,9 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
       map(response => loginResponseSchema.parse(response)),
       tap(({ token, user }) => {
-        const mappedUser: AuthUser = {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        };
-
         localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(mappedUser));
-      })
+        localStorage.setItem('user', JSON.stringify(user));
+      }),
     );
   }
 

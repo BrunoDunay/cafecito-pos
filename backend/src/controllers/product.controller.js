@@ -3,22 +3,47 @@ import Product from "../models/Product.js";
 /* Listar productos con búsqueda y paginación */
 export const getProducts = async (req, res) => {
   try {
-    const { q, page = 1, limit = 20 } = req.query;
+    const {
+      q,
+      page = 1,
+      limit = 10,
+      category
+    } = req.query;
 
-    const query = q
-      ? { name: { $regex: q, $options: "i" } }
-      : {};
+    const query = {};
 
-    const skip = (page - 1) * limit;
+    // búsqueda por nombre
+    if (q) {
+      query.name = { $regex: q, $options: "i" };
+    }
 
-    const [products, total] = await Promise.all([
-      Product.find(query)
+    // filtro por categoría
+    if (category) {
+      query.category = category;
+    }
+
+    let products;
+    let total;
+
+    if (category) {
+      // Si hay categoría no pagina
+      products = await Product.find(query)
         .populate("category", "name")
+        .sort({ createdAt: -1, _id: 1 });
+
+      total = products.length;
+    } else {
+      // Si no hay categoría pagina
+      const skip = (page - 1) * limit;
+
+      products = await Product.find(query)
+        .populate("category", "name")
+        .sort({ createdAt: -1, _id: 1 })
         .skip(skip)
-        .limit(Number(limit))
-        .sort({ createdAt: -1 }),
-      Product.countDocuments(query),
-    ]);
+        .limit(Number(limit));
+
+      total = await Product.countDocuments(query);
+    }
 
     res.json({
       data: products,
@@ -27,6 +52,7 @@ export const getProducts = async (req, res) => {
       limit: Number(limit),
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Error fetching products" });
   }
 };

@@ -1,1 +1,22 @@
-<p>main works!</p>
+<div class="layout">
+  <!-- Aside -->
+  <aside class="sidebar">
+    <h2 class="logo">Cafecito Feliz</h2>
+
+    <nav>
+      <a routerLink="/products" routerLinkActive="active">Productos</a>
+      <a routerLink="/customers" routerLinkActive="active">Clientes</a>
+      <a routerLink="/cart" routerLinkActive="active">Carrito</a>
+      <a routerLink="/sales" routerLinkActive="active">Ventas</a>
+      <a routerLink="/admin/users" routerLinkActive="active">Usuarios</a>
+    </nav>
+  </aside>
+
+  <!-- Contenido -->
+  <div class="content">
+    <app-navbar></app-navbar>
+    <main class="page">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

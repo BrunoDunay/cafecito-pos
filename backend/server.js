@@ -8,6 +8,8 @@ import logger from './src/middlewares/logger.js';
 import errorHandler from './src/middlewares/error.handler.js';
 import setupGlobalErrorHandlers from './src/middlewares/global.error.js';
 import initializeData from './src/config/initializeData.js';
+import path from 'path';
+
 
 // Variables de entorno
 dotenv.config();
@@ -16,6 +18,8 @@ dotenv.config();
 setupGlobalErrorHandlers();
 
 const app = express();
+
+app.use('/public', express.static(path.join(process.cwd(), 'public')));
 
 // Middlewares
 app.use(

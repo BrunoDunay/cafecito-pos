@@ -1,1 +1,41 @@
-<p>products works!</p>
+<h1>Productos</h1>
+
+<div class="categories-filter">
+  <button (click)="filterByCategory(null)" [class.active]="!selectedCategoryId">
+    Todos
+  </button>
+
+  <button
+    *ngFor="let category of categories"
+    (click)="filterByCategory(category._id)"
+    [class.active]="selectedCategoryId === category._id"
+  >
+    {{ category.name }}
+  </button>
+</div>
+
+<div class="grid">
+  <div class="card" *ngFor="let product of filteredProducts">
+    <img
+      *ngIf="product.image"
+      [src]="product.image"
+      alt="{{ product.name }}"
+      class="product-image"
+    />
+    <h3>{{ product.name }}</h3>
+    <p>Categoría: {{ product.category?.name || "Sin categoría" }}</p>
+    <p>Precio: ${{ product.price }}</p>
+    <p>Stock: {{ product.stock }}</p>
+    <button [disabled]="product.stock === 0">Agregar</button>
+  </div>
+</div>
+
+<div *ngIf="filteredProducts.length === 0">No hay productos para mostrar</div>
+
+<div class="pagination">
+  <button (click)="prevPage()" [disabled]="page === 1">Anterior</button>
+  <span> Página {{ page }} de {{ Math.ceil(total / limit) }} </span>
+  <button (click)="nextPage()" [disabled]="page * limit >= total">
+    Siguiente
+  </button>
+</div>
