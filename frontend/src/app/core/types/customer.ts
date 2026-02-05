@@ -1,10 +1,15 @@
 import z from 'zod';
 
+// Schema para cliente
 export const customerSchema = z.object({
-  _id: z.string(),
+  customerId: z.string(),
   name: z.string(),
-  phone_or_email: z.string(),
-  purchases_count: z.number(),
+  email: z.string().email(),
+  phone: z.string().nullable().optional(),
+  purchasesCount: z.number(),
+  isActive: z.boolean(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
 });
 
 export const customerArraySchema = z.array(customerSchema);

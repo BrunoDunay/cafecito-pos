@@ -2,168 +2,104 @@ import Sale from "../models/Sale.js";
 import Product from "../models/Product.js";
 import Customer from "../models/Customer.js";
 
-/* Crear nueva venta */
+// Mapea venta a snake_case para respuesta API
+const mapSale = (s) => ({
+  sale_id: s._id,
+  sale_number: s.sale_number,
+  customer_id: s.customer_id,
+  sold_by: s.sold_by,
+  items: s.items.map(i => ({
+    product_id: i.product_id,
+    product_name_snapshot: i.product_name_snapshot,
+    unit_price_snapshot: i.unit_price_snapshot,
+    quantity: i.quantity,
+    line_total: i.line_total,
+  })),
+  payment_method: s.payment_method,
+  subtotal: s.subtotal,
+  discount_percent: s.discount_percent,
+  discount_amount: s.discount_amount,
+  total: s.total,
+  created_at: s.createdAt,
+  updated_at: s.updatedAt,
+});
+
+// Crea nueva venta
 export const createSale = async (req, res) => {
-  try {
-    const { customerId, paymentMethod = "cash", items } = req.body;
+  const { customer_id, items, payment_method } = req.body;
 
-    if (!items || items.length === 0) {
-      return res.status(422).json({
-        error: "Validation failed",
-        details: [{ field: "items", message: "items cannot be empty" }],
-      });
-    }
+  // Validar stock y calcular totales
+  let subtotal = 0;
 
-    let subtotal = 0;
-    const saleItems = [];
+  for (const item of items) {
+    const product = await Product.findById(item.product_id);
 
-    for (const item of items) {
-      if (item.quantity < 1) {
-        return res.status(422).json({
-          error: "Validation failed",
-          details: [
-            { field: "quantity", message: "quantity must be >= 1" },
-          ],
-        });
-      }
+    if (!product)
+      return res.status(404).json({ message: "Product not found" });
 
-      const product = await Product.findById(item.productId);
+    if (product.stock < item.quantity)
+      return res.status(400).json({ message: "Insufficient stock" });
 
-      if (!product) {
-        return res.status(400).json({
-          error: "Product not found",
-          details: [{ productId: item.productId }],
-        });
-      }
+    item.unit_price_snapshot = product.price;
+    item.line_total = product.price * item.quantity;
+    subtotal += item.line_total;
 
-      if (item.quantity > product.stock) {
-        return res.status(400).json({
-          error: "Insufficient stock",
-          details: [
-            {
-              productId: product._id,
-              message: `Only ${product.stock} available`,
-            },
-          ],
-        });
-      }
-
-      const lineTotal = product.price * item.quantity;
-
-      saleItems.push({
-        productId: product._id,
-        productNameSnapshot: product.name,
-        unitPriceSnapshot: product.price,
-        quantity: item.quantity,
-        lineTotal,
-      });
-
-      subtotal += lineTotal;
-
-      product.stock -= item.quantity;
-      await product.save();
-    }
-
-    let discountPercent = 0;
-    let customer = null;
-
-    if (customerId) {
-      customer = await Customer.findById(customerId);
-
-      if (customer) {
-        if (customer.purchasesCount >= 8) discountPercent = 15;
-        else if (customer.purchasesCount >= 4) discountPercent = 10;
-        else if (customer.purchasesCount >= 1) discountPercent = 5;
-
-        customer.purchasesCount += 1;
-        await customer.save();
-      }
-    }
-
-    const discountAmount = (subtotal * discountPercent) / 100;
-    const total = subtotal - discountAmount;
-
-    const saleNumber = `CF-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-
-    const sale = await Sale.create({
-      saleNumber,
-      customerId: customer?._id || null,
-      paymentMethod,
-      items: saleItems,
-      subtotal,
-      discountPercent,
-      discountAmount,
-      total,
-      soldBy: req.user._id,
-    });
-
-    const ticket = {
-      sale_id: sale._id,
-      timestamp: sale.createdAt,
-      store_name: "Cafecito Feliz",
-      items: sale.items.map((i) => ({
-        name: i.productNameSnapshot,
-        qty: i.quantity,
-        unit_price: i.unitPriceSnapshot,
-        line_total: i.lineTotal,
-      })),
-      subtotal,
-      discount: `${discountPercent}% (-$${discountAmount.toFixed(2)})`,
-      total,
-      payment_method: paymentMethod,
-    };
-
-    res.status(201).json({
-      sale_id: sale._id,
-      sale_number: sale.saleNumber,
-      customer_id: sale.customerId,
-      payment_method: paymentMethod,
-      items: sale.items.map((i) => ({
-        product_id: i.productId,
-        product_name: i.productNameSnapshot,
-        quantity: i.quantity,
-        unit_price: i.unitPriceSnapshot,
-        line_total: i.lineTotal,
-      })),
-      subtotal,
-      discount_percent: discountPercent,
-      discount_amount: discountAmount,
-      total,
-      ticket,
-      created_at: sale.createdAt,
-    });
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    product.stock -= item.quantity;
+    await product.save();
   }
+
+  // Aplicar descuento si existe
+  const discount_percent = req.body.discount_percent || 0;
+  const discount_amount = (subtotal * discount_percent) / 100;
+  const total = subtotal - discount_amount;
+
+  // Crear venta
+  const sale = await Sale.create({
+    sale_number: `SALE-${Date.now()}`,
+    customer_id: customer_id,
+    sold_by: req.user.userId,
+    items: items.map(async i => ({
+      product_id: i.product_id,
+      product_name_snapshot: i.product_name_snapshot || await Product.findById(i.product_id).then(p => p.name),
+      unit_price_snapshot: i.unit_price_snapshot,
+      quantity: i.quantity,
+      line_total: i.line_total,
+    })),
+    payment_method: payment_method,
+    subtotal: subtotal,
+    discount_percent: discount_percent,
+    discount_amount: discount_amount,
+    total: total,
+  });
+
+  // Incrementar contador de compras del cliente
+  if (customer_id) {
+    await Customer.findByIdAndUpdate(customer_id, {
+      $inc: { purchases_count: 1 },
+    });
+  }
+
+  res.status(201).json(mapSale(sale));
 };
 
-/* Ver ventas por ID */
+// Lista todas las ventas
+export const getSales = async (req, res) => {
+  const sales = await Sale.find()
+    .populate("customer_id", "name")
+    .populate("sold_by", "name")
+    .sort({ createdAt: -1 });
+
+  res.json(sales.map(mapSale));
+};
+
+// Obtiene venta por ID
 export const getSaleById = async (req, res) => {
   const sale = await Sale.findById(req.params.id)
-    .populate("customerId", "name phoneOrEmail");
+    .populate("customer_id", "name")
+    .populate("sold_by", "name");
 
-  if (!sale) {
-    return res.status(404).json({ error: "Sale not found" });
-  }
+  if (!sale)
+    return res.status(404).json({ message: "Sale not found" });
 
-  res.json(sale);
-};
-
-/* Listado de ventas */
-export const getSales = async (req, res) => {
-  const { date } = req.query;
-  const query = {};
-
-  if (date) {
-    const start = new Date(date);
-    const end = new Date(date);
-    end.setHours(23, 59, 59, 999);
-    query.createdAt = { $gte: start, $lte: end };
-  }
-
-  const sales = await Sale.find(query)
-    .sort({ createdAt: -1 })
-    .populate("customerId", "name");
-
-  res.json(sales);
+  res.json(mapSale(sale));
 };

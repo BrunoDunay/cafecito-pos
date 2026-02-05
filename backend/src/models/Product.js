@@ -34,7 +34,7 @@ const productSchema = new mongoose.Schema(
       default: null
     },
 
-    isActive: {
+    is_active: {
       type: Boolean,
       default: true
     }

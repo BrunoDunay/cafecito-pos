@@ -20,7 +20,7 @@ const categorySchema = new mongoose.Schema(
       default: ''
     },
 
-    isActive: {
+    is_active: {
       type: Boolean,
       default: true
     }

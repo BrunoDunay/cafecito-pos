@@ -1,21 +1,27 @@
 import z from 'zod';
 
+// Schema para item de venta
 export const saleItemSchema = z.object({
-  product_id: z.string(),
-  name: z.string(),
-  price: z.number(),
+  productId: z.string(),
+  productName: z.string(),
   quantity: z.number(),
+  unitPrice: z.number(),
+  lineTotal: z.number(),
 });
 
+// Schema para venta completa
 export const saleSchema = z.object({
-  sale_number: z.string(),
+  saleId: z.string(),
+  saleNumber: z.string(),
+  customerId: z.string().nullable(),
+  paymentMethod: z.string(),
   items: z.array(saleItemSchema),
   subtotal: z.number(),
-  discount_percent: z.number(),
-  discount_amount: z.number(),
+  discountPercent: z.number(),
+  discountAmount: z.number(),
   total: z.number(),
-  sold_by: z.string(),
-  created_at: z.string(),
+  soldBy: z.string(),
+  createdAt: z.string(),
 });
 
 export type Sale = z.infer<typeof saleSchema>;

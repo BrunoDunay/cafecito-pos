@@ -1,16 +1,18 @@
 import z from 'zod';
 
+// Schema para usuario
 export const userSchema = z.object({
-  _id: z.string(),
+  userId: z.string(),
   name: z.string(),
   email: z.string(),
   role: z.enum(['admin', 'seller']),
-  is_active: z.boolean(),
+  isActive: z.boolean(),
 });
 
-export type User = z.infer<typeof userSchema>;
-
+// Credenciales para login
 export type UserCredentials = {
   email: string;
   password: string;
 };
+
+export type User = z.infer<typeof userSchema>;

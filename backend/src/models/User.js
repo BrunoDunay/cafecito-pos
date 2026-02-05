@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema(
       default: 'seller'
     },
 
-    isActive: {
+    is_active: {
       type: Boolean,
       default: true
     }

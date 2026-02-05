@@ -1,41 +1,143 @@
-<h1>Productos</h1>
+<!-- products.component.html -->
+<div class="p-4">
+  <h1 class="text-2xl font-bold text-gray-800 mb-4">Productos</h1>
 
-<div class="categories-filter">
-  <button (click)="filterByCategory(null)" [class.active]="!selectedCategoryId">
-    Todos
-  </button>
+  <!-- Filtro de categorías -->
+  <div class="flex flex-wrap gap-2 mb-4">
+    <button 
+      (click)="filterByCategory(null)" 
+      [class]="!isCategoryMode 
+        ? 'bg-blue-600 text-white border-blue-600' 
+        : 'bg-white text-gray-700 border-gray-300'"
+      class="px-3 py-1.5 border rounded-full text-sm font-medium transition-colors"
+    >
+      Todos
+    </button>
 
-  <button
-    *ngFor="let category of categories"
-    (click)="filterByCategory(category._id)"
-    [class.active]="selectedCategoryId === category._id"
-  >
-    {{ category.name }}
-  </button>
-</div>
-
-<div class="grid">
-  <div class="card" *ngFor="let product of filteredProducts">
-    <img
-      *ngIf="product.image"
-      [src]="product.image"
-      alt="{{ product.name }}"
-      class="product-image"
-    />
-    <h3>{{ product.name }}</h3>
-    <p>Categoría: {{ product.category?.name || "Sin categoría" }}</p>
-    <p>Precio: ${{ product.price }}</p>
-    <p>Stock: {{ product.stock }}</p>
-    <button [disabled]="product.stock === 0">Agregar</button>
+    @for (category of categories; track category.categoryId) {
+      <button
+        (click)="filterByCategory(category.categoryId)"
+        [class]="selectedCategoryId === category.categoryId
+          ? 'bg-blue-600 text-white border-blue-600'
+          : 'bg-white text-gray-700 border-gray-300'"
+        class="px-3 py-1.5 border rounded-full text-sm font-medium transition-colors"
+      >
+        {{ category.name }}
+      </button>
+    }
   </div>
-</div>
 
-<div *ngIf="filteredProducts.length === 0">No hay productos para mostrar</div>
+  <!-- Información de categoría -->
+  @if (isCategoryMode) {
+    <div class="bg-blue-50 border-l-4 border-blue-500 p-3 rounded mb-4">
+      <p class="text-sm text-gray-700">
+        Mostrando productos de: 
+        <strong class="font-semibold">{{ getCategoryName(selectedCategoryId!) }}</strong>
+      </p>
+    </div>
+  }
 
-<div class="pagination">
-  <button (click)="prevPage()" [disabled]="page === 1">Anterior</button>
-  <span> Página {{ page }} de {{ Math.ceil(total / limit) }} </span>
-  <button (click)="nextPage()" [disabled]="page * limit >= total">
-    Siguiente
-  </button>
+  <!-- Información de búsqueda -->
+  @if (currentSearchTerm) {
+    <div class="bg-green-50 border-l-4 border-green-500 p-3 rounded mb-4">
+      <p class="text-sm text-gray-700">
+        Buscando: <strong class="font-semibold">"{{ currentSearchTerm }}"</strong> 
+        ({{ filteredProducts.length }} resultados)
+        @if (!isCategoryMode) {
+          <span class="text-gray-500 text-xs ml-2">• Buscando en todos los productos</span>
+        }
+      </p>
+    </div>
+  }
+
+  <!-- Grid de productos - 3 columnas -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+    @for (product of filteredProducts; track product.productId) {
+      <div class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow p-4">
+        <!-- Imagen del producto -->
+        @if (product.image) {
+          <img
+            [src]="product.image"
+            alt="{{ product.name }}"
+            class="w-full h-40 object-cover rounded-md mb-3"
+          />
+        } @else {
+          <div class="w-full h-40 bg-gray-100 rounded-md flex items-center justify-center mb-3">
+            <span class="text-gray-400 text-sm">Sin imagen</span>
+          </div>
+        }
+        
+        <!-- Información del producto -->
+        <h3 class="font-semibold text-gray-800 text-sm mb-1 line-clamp-2 h-8">{{ product.name }}</h3>
+        <p class="text-xs text-gray-600 mb-1">
+          Categoría: <span class="font-medium">{{ product.category?.name || "Sin categoría" }}</span>
+        </p>
+        <p class="text-xs text-gray-600 mb-1">
+          Precio: <span class="font-medium text-green-600">${{ product.price | number:'1.2-2' }}</span>
+        </p>
+        <p class="text-xs text-gray-600 mb-3">
+          Stock: 
+          <span [class]="product.stock > 0 ? 'font-medium text-blue-600' : 'font-medium text-red-600'">
+            {{ product.stock }}
+          </span>
+        </p>
+        
+        <!-- Botón agregar al carrito -->
+        <button
+          [disabled]="product.stock === 0"
+          (click)="addToCart(product)"
+          [class]="product.stock === 0
+            ? 'bg-gray-300 cursor-not-allowed'
+            : 'bg-blue-600 hover:bg-blue-700'"
+          class="w-full text-white py-2 rounded-md text-sm font-medium transition-colors"
+        >
+          {{ product.stock === 0 ? "Sin stock" : "Agregar" }}
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- Estado sin productos -->
+  @if (filteredProducts.length === 0) {
+    <div class="text-center py-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+      @if (currentSearchTerm) {
+        <p class="text-gray-600">No se encontraron productos para "{{ currentSearchTerm }}"</p>
+      } @else if (!currentSearchTerm && !isCategoryMode) {
+        <p class="text-gray-600">No hay productos para mostrar</p>
+      } @else if (!currentSearchTerm && isCategoryMode) {
+        <p class="text-gray-600">No hay productos en esta categoría</p>
+      }
+    </div>
+  }
+
+  <!-- Paginación -->
+  @if (showPagination) {
+    <div class="flex justify-center items-center gap-4 mt-8 pt-6 border-t border-gray-200">
+      <button 
+        (click)="prevPage()" 
+        [disabled]="page === 1"
+        [class]="page === 1
+          ? 'bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed'
+          : 'bg-white text-blue-600 border-blue-600 hover:bg-blue-50'"
+        class="px-4 py-2 border rounded-lg text-sm font-medium transition-colors"
+      >
+        Anterior
+      </button>
+      
+      <span class="text-sm text-gray-600">
+        Página {{ page }} de {{ Math.ceil(total / limit) }}
+      </span>
+      
+      <button 
+        (click)="nextPage()" 
+        [disabled]="page * limit >= total"
+        [class]="page * limit >= total
+          ? 'bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed'
+          : 'bg-white text-blue-600 border-blue-600 hover:bg-blue-50'"
+        class="px-4 py-2 border rounded-lg text-sm font-medium transition-colors"
+      >
+        Siguiente
+      </button>
+    </div>
+  }
 </div>

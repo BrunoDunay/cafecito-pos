@@ -1,38 +1,46 @@
 import Category from "../models/Category.js";
 import Product from "../models/Product.js";
 
+/* Convierte categoría a snake_case */
+const mapCategory = (c) => ({
+  category_id: c._id,
+  name: c.name,
+  description: c.description,
+  image: c.image,
+  is_active: c.is_active, 
+  created_at: c.createdAt,
+  updated_at: c.updatedAt,
+});
+
 /* Listar categorías */
 export const getCategories = async (req, res) => {
   const categories = await Category.find().sort({ name: 1 });
-  res.json(categories);
+  res.json(categories.map(mapCategory));
 };
 
 /* Crear categoría */
 export const createCategory = async (req, res) => {
-  const category = await Category.create({ name: req.body.name });
-  res.status(201).json(category);
+  const { name, description, image } = req.body;
+  const category = await Category.create({ 
+    name, 
+    description, 
+    image 
+  });
+  res.status(201).json(mapCategory(category));
 };
 
-/* Eliminar categoría SOLO si no tiene productos */
+/* Eliminar categoría si no tiene productos */
 export const deleteCategory = async (req, res) => {
-  const categoryId = req.params.id;
-
   const productsCount = await Product.countDocuments({
-    category: categoryId
+    category: req.params.id,
   });
 
-  if (productsCount > 0) {
+  if (productsCount > 0)
     return res.status(400).json({
-      message: "No se puede eliminar la categoría porque tiene productos asignados",
-      productsCount
+      message: "Category has products",
+      products_count: productsCount,
     });
-  }
 
-  const category = await Category.findByIdAndDelete(categoryId);
-
-  if (!category) {
-    return res.status(404).json({ error: "Category not found" });
-  }
-
+  await Category.findByIdAndDelete(req.params.id);
   res.json({ message: "Category deleted" });
 };

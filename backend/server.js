@@ -25,7 +25,7 @@ app.use('/public', express.static(path.join(process.cwd(), 'public')));
 app.use(
   cors({
     origin: process.env.FRONT_APP_URL || '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   })
 );
 

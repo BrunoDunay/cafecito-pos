@@ -1,1 +1,207 @@
-<p>cart works!</p>
+<!-- components/cart/cart.component.html - Versión con búsqueda -->
+<aside class="cart-sidebar">
+  <div class="cart-header">
+    <h3>🛒 Carrito</h3>
+    @if (!cart().isEmpty) {
+      <button (click)="clearCart()" class="clear-btn">
+        Vaciar
+      </button>
+    }
+  </div>
+  
+  <!-- Cliente asignado -->
+  <div class="customer-section">
+    @if (cart().customer) {
+      <div class="assigned-customer">
+        <div class="customer-info">
+          <div class="customer-avatar">
+            {{ cart().customer!.name.charAt(0).toUpperCase() }}
+          </div>
+          <div>
+            <strong>{{ cart().customer!.name }}</strong>
+            <div class="customer-stats">
+              {{ cart().customer!.purchasesCount }} compras
+              @if (cart().discountPercent > 0) {
+                <span class="discount-badge">
+                  -{{ cart().discountPercent }}%
+                </span>
+              }
+            </div>
+            <!-- Mensaje de descuento -->
+            @if (discountMessage()) {
+              <div class="discount-message">
+                {{ discountMessage() }}
+              </div>
+            }
+          </div>
+        </div>
+        <button (click)="removeCustomer()" class="remove-customer-btn">
+          ✕
+        </button>
+      </div>
+    } @else {
+      <div class="no-customer">
+        <button (click)="toggleCustomerSelector()" class="add-customer-btn">
+          + Asignar cliente
+        </button>
+      </div>
+    }
+    
+    <!-- Selector de clientes -->
+    @if (showCustomerSelector()) {
+      <div class="customer-selector">
+        <div class="selector-header">
+          <h4>Seleccionar cliente</h4>
+          
+          <!-- Barra de búsqueda -->
+          <div class="search-container">
+            <input
+              type="text"
+              [value]="searchTerm()"
+              (input)="filterCustomers($any($event.target).value)"
+              placeholder="Buscar por nombre, email o teléfono..."
+              class="search-input"
+            />
+          </div>
+          
+          <button (click)="toggleCustomerSelector()" class="close-selector">
+            ✕
+          </button>
+        </div>
+        
+        @if (loadingCustomers()) {
+          <div class="loading-customers">
+            Cargando clientes...
+          </div>
+        } @else {
+          <div class="customers-list">
+            @for (customer of filteredCustomers(); track customer.customerId) {
+              <div 
+                class="customer-option" 
+                (click)="selectCustomer(customer)"
+              >
+                <div class="option-avatar">
+                  {{ customer.name.charAt(0).toUpperCase() }}
+                </div>
+                <div class="option-details">
+                  <div class="option-name">{{ customer.name }}</div>
+                  <div class="option-email">{{ customer.email }}</div>
+                  <div class="option-purchases">
+                    {{ customer.purchasesCount }} compras
+                    @if (getCustomerDiscount(customer) > 0) {
+                      <span class="option-discount">
+                        -{{ getCustomerDiscount(customer) }}%
+                      </span>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+            
+            @if (filteredCustomers().length === 0 && searchTerm()) {
+              <div class="no-customers-found">
+                No se encontraron clientes con "{{ searchTerm() }}"
+              </div>
+            }
+            
+            @if (filteredCustomers().length === 0 && !searchTerm()) {
+              <div class="no-customers-found">
+                No hay clientes disponibles
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+  
+  <!-- Lista de productos -->
+  <div class="cart-items">
+    @if (cart().isEmpty) {
+      <div class="empty-cart">
+        <p>El carrito está vacío</p>
+        <p class="text-sm text-gray-500">Agrega productos desde la lista</p>
+      </div>
+    }
+    
+    @for (item of cart().items; track item.productId) {
+      <div class="cart-item">
+        <div class="item-image">
+          @if (item.product.image) {
+            <img [src]="item.product.image" [alt]="item.product.name">
+          } @else {
+            <div class="image-placeholder">
+              {{ item.product.name.charAt(0).toUpperCase() }}
+            </div>
+          }
+        </div>
+        
+        <div class="item-details">
+          <div class="item-header">
+            <h4 class="item-name">{{ item.product.name }}</h4>
+            <button 
+              (click)="removeItem(item.productId)" 
+              class="remove-item-btn"
+            >
+              ✕
+            </button>
+          </div>
+          
+          <div class="item-price">${{ item.unitPrice | number:'1.2-2' }}</div>
+          
+          <div class="item-quantity">
+            <button 
+              (click)="decreaseQuantity(item)" 
+              [disabled]="item.quantity <= 1"
+              class="qty-btn"
+            >
+              −
+            </button>
+            <span class="qty-display">{{ item.quantity }}</span>
+            <button 
+              (click)="increaseQuantity(item)" 
+              [disabled]="item.quantity >= item.product.stock"
+              class="qty-btn"
+            >
+              +
+            </button>
+          </div>
+        </div>
+        
+        <div class="item-total">
+          ${{ item.lineTotal | number:'1.2-2' }}
+        </div>
+      </div>
+    }
+  </div>
+  
+  <!-- Totales -->
+  @if (!cart().isEmpty) {
+    <div class="cart-totals">
+      <div class="total-row">
+        <span>Subtotal:</span>
+        <span>${{ cart().subtotal | number:'1.2-2' }}</span>
+      </div>
+      
+      @if (cart().discountPercent > 0) {
+        <div class="total-row discount">
+          <span>Descuento ({{ cart().discountPercent }}%):</span>
+          <span>-${{ cart().discountAmount | number:'1.2-2' }}</span>
+        </div>
+      }
+      
+      <div class="total-row grand-total">
+        <span>Total:</span>
+        <span>${{ cart().total | number:'1.2-2' }}</span>
+      </div>
+      
+      <button 
+        [disabled]="cart().isEmpty" 
+        (click)="proceedToCheckout()"
+        class="checkout-btn"
+      >
+        Proceder al pago (${{ cart().total | number:'1.2-2' }})
+      </button>
+    </div>
+  }
+</aside>

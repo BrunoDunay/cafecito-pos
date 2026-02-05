@@ -25,13 +25,13 @@ const customerSchema = new mongoose.Schema(
       trim: true,
     },
 
-    purchasesCount: {
+    purchases_count: {
       type: Number,
       default: 0,
       min: 0,
     },
 
-    isActive: {
+    is_active: {
       type: Boolean,
       default: true,
     },

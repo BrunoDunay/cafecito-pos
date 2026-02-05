@@ -1,3 +1,4 @@
+// backend/initializers/seed.js (o donde tengas este archivo)
 import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 
@@ -7,7 +8,7 @@ const initializeData = async () => {
   const adminExists = await User.findOne({ email: adminEmail });
 
   if (adminExists) {
-    console.log('Admin user already exists');
+    console.log('✅ Admin user already exists');
     return;
   }
 
@@ -18,10 +19,10 @@ const initializeData = async () => {
     email: adminEmail,
     password: hashedPassword,
     role: 'admin',
-    isActive: true,
+    is_active: true,  
   });
 
-  console.log('Admin user created');
+  console.log('✅ Admin user created successfully');
 };
 
 export default initializeData;

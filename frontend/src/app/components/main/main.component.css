@@ -31,4 +31,41 @@
 .page {
   padding: 1rem;
   overflow-y: auto;
+  width: 100%;
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 240px;
+  background-color: #1f2937;
+  color: white;
+  padding: 1.5rem;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 30;
+}
+
+.content {
+  flex: 1;
+  margin-left: 240px;
+  margin-right: 340px; 
+  min-height: 100vh;
+}
+
+.page {
+  padding: 1rem;
+}
+
+app-cart {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 40;
 }

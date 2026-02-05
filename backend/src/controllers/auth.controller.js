@@ -2,134 +2,80 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
-/* Helpers */
-const generateAccessToken = (user) => {
-  return jwt.sign(
-    {
-      userId: user._id,
-      role: user.role,
-    },
+/* Genera token de acceso */
+const generateAccessToken = (user) =>
+  jwt.sign(
+    { user_id: user._id, role: user.role },  
     process.env.JWT_SECRET,
     { expiresIn: '1h' }
   );
-};
 
-const generateRefreshToken = (userId) => {
-  return jwt.sign(
-    { userId },
-    process.env.JWT_REFRESH_SECRET,
-    { expiresIn: '7d' }
-  );
-};
+/* Genera token de refresco */
+const generateRefreshToken = (userId) =>
+  jwt.sign({ user_id: userId }, process.env.JWT_REFRESH_SECRET, {  
+    expiresIn: '7d',
+  });
 
-/* Login */
+/* Iniciar sesión */
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({
-        message: 'Email and password are required',
-      });
-    }
-
     const user = await User.findOne({ email });
+    if (!user || user.is_active === false)  
+      return res.status(401).json({ message: 'Invalid credentials' });
 
-    if (!user) {
-      return res.status(401).json({
-        message: 'Invalid credentials',
-      });
-    }
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid)
+      return res.status(401).json({ message: 'Invalid credentials' });
 
-    if (user.isActive === false) {
-      return res.status(403).json({
-        message: 'User account is deactivated',
-      });
-    }
-
-    const isPasswordValid = await bcrypt.compare(
-      password,
-      user.password
-    );
-
-    if (!isPasswordValid) {
-      return res.status(401).json({
-        message: 'Invalid credentials',
-      });
-    }
-
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user._id);
-
-    res.status(200).json({
-      token: accessToken,
-      refreshToken,
+    res.json({
+      token: generateAccessToken(user),
+      refresh_token: generateRefreshToken(user._id),
       user: {
-        id: user._id,
+        user_id: user._id,
         email: user.email,
         role: user.role,
       },
     });
-  } catch (error) {
-    next(error);
+  } catch (e) {
+    next(e);
   }
 };
 
-/* Refresh token */
+/* Refrescar token */
 export const refreshToken = async (req, res, next) => {
   try {
-    const { refreshToken } = req.body;
-
-    if (!refreshToken) {
-      return res.status(400).json({
-        message: 'Refresh token is required',
-      });
-    }
-
     const decoded = jwt.verify(
-      refreshToken,
+      req.body.refresh_token,  
       process.env.JWT_REFRESH_SECRET
     );
 
-    const user = await User.findById(decoded.userId);
+    const user = await User.findById(decoded.user_id);  
+    if (!user || !user.is_active)  
+      return res.status(401).json({ message: 'Invalid refresh token' });
 
-    if (!user || user.isActive === false) {
-      return res.status(401).json({
-        message: 'Invalid refresh token',
-      });
-    }
-
-    const newAccessToken = generateAccessToken(user);
-
-    res.status(200).json({
-      token: newAccessToken,
-    });
-  } catch (error) {
-    next(error);
+    res.json({ token: generateAccessToken(user) });
+  } catch (e) {
+    next(e);
   }
 };
 
-/* Me */
+/* Obtener usuario autenticado */
 export const me = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.userId)
-      .select('_id email role');
-
-    if (!user) {
-      return res.status(404).json({
-        message: 'User not found',
-      });
-    }
-
-    res.status(200).json(user);
-  } catch (error) {
-    next(error);
+    const user = await User.findById(req.user.user_id);  
+    res.json({
+      user_id: user._id,
+      email: user.email,
+      role: user.role,
+    });
+  } catch (e) {
+    next(e);
   }
 };
 
-/* Logout */
+/* Cerrar sesión */
 export const logout = async (req, res) => {
-  res.status(200).json({
-    message: 'Logged out successfully',
-  });
+  res.json({ message: 'Logged out successfully' });
 };

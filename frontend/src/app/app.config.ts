@@ -7,15 +7,18 @@ import {
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { snakeCaseInterceptor } from './core/interceptors/snake-case.interceptor'; // Cambia a función
 
 export const appConfig: ApplicationConfig = {
   providers: [
     // Rutas
     provideRouter(routes),
 
-    // HttpClient + interceptor JWT
     provideHttpClient(
-      withInterceptors([authInterceptor])
+      withInterceptors([
+        authInterceptor,        // Maneja autenticación (JWT)
+        snakeCaseInterceptor    // Transforma nombres
+      ])
     ),
   ],
 };

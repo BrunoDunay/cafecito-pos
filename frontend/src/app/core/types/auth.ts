@@ -1,11 +1,13 @@
 import z from 'zod';
 
+// Schema para usuario autenticado
 export const authUserSchema = z.object({
-  id: z.string(),
+  userId: z.string(),
   email: z.string(),
   role: z.enum(['admin', 'seller']),
 });
 
+// Schema para respuesta de login
 export const loginResponseSchema = z.object({
   token: z.string(),
   refreshToken: z.string().optional(),

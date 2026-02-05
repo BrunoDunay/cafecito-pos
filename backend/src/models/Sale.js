@@ -2,18 +2,18 @@ import mongoose from 'mongoose';
 
 const saleItemSchema = new mongoose.Schema(
   {
-    productId: {
+    product_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Product',
       required: true
     },
 
-    productNameSnapshot: {
+    product_name_snapshot: {
       type: String,
       required: true
     },
 
-    unitPriceSnapshot: {
+    unit_price_snapshot: {
       type: Number,
       required: true,
       min: 0
@@ -25,7 +25,7 @@ const saleItemSchema = new mongoose.Schema(
       min: 1
     },
 
-    lineTotal: {
+    line_total: {
       type: Number,
       required: true,
       min: 0
@@ -38,13 +38,13 @@ const saleItemSchema = new mongoose.Schema(
 
 const saleSchema = new mongoose.Schema(
   {
-    saleNumber: {
+    sale_number: {
       type: String,
       required: true,
       unique: true
     },
 
-    customerId: {
+    customer_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Customer',
       default: null
@@ -56,7 +56,7 @@ const saleSchema = new mongoose.Schema(
       validate: v => v.length > 0
     },
 
-    paymentMethod: {
+    payment_method: {
       type: String,
       enum: ['cash', 'card', 'transfer'],
       required: true
@@ -68,14 +68,14 @@ const saleSchema = new mongoose.Schema(
       min: 0
     },
 
-    discountPercent: {
+    discount_percent: {
       type: Number,
       default: 0,
       min: 0,
       max: 100
     },
 
-    discountAmount: {
+    discount_amount: {
       type: Number,
       default: 0,
       min: 0
@@ -87,7 +87,7 @@ const saleSchema = new mongoose.Schema(
       min: 0
     },
 
-    soldBy: {
+    sold_by: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true
