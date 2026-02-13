@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../../enviroments/enviroment';
 import z from 'zod';
-import { productArraySchema } from '../types/product';
+import { productArraySchema, productSchema } from '../types/product';
+import { Product } from '../types/product';
 
 const responseSchema = z.object({
   data: productArraySchema,
@@ -12,7 +13,23 @@ const responseSchema = z.object({
   limit: z.number(),
 });
 
+const singleProductResponseSchema = z.union([
+  z.object({ data: productSchema }),
+  productSchema
+]);
+
 export type ProductsResponse = z.infer<typeof responseSchema>;
+
+export const createProductSchema = z.object({
+  name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
+  price: z.number().min(0, 'El precio debe ser mayor o igual a 0'),
+  stock: z.number().min(0, 'El stock no puede ser negativo'),
+  image: z.string().optional(),
+  category: z.string().nullable().optional(),
+  isActive: z.boolean().default(true),
+});
+
+export type CreateProductDto = z.infer<typeof createProductSchema>;
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +44,7 @@ export class ProductService {
     limit: number = 10,
     category?: string,
     q?: string
-  ) {
+  ): Observable<ProductsResponse> {
     const params: any = { page, limit };
     if (q) params.q = q;
     if (category) params.category = category;
@@ -35,5 +52,44 @@ export class ProductService {
     return this.http
       .get(this.apiUrl, { params })
       .pipe(map((res) => responseSchema.parse(res)));
+  }
+
+  getById(id: string): Observable<Product> {
+    return this.http
+      .get(`${this.apiUrl}/${id}`)
+      .pipe(
+        map((res) => {
+          const parsed = singleProductResponseSchema.parse(res);
+          return 'data' in parsed ? parsed.data : parsed;
+        })
+      );
+  }
+
+  create(productData: CreateProductDto): Observable<Product> {
+    return this.http
+      .post(this.apiUrl, productData)
+      .pipe(
+        map((res) => {
+          const parsed = singleProductResponseSchema.parse(res);
+          return 'data' in parsed ? parsed.data : parsed;
+        })
+      );
+  }
+
+  update(id: string, productData: Partial<CreateProductDto>): Observable<Product> {
+    return this.http
+      .put(`${this.apiUrl}/${id}`, productData)
+      .pipe(
+        map((res) => {
+          const parsed = singleProductResponseSchema.parse(res);
+          return 'data' in parsed ? parsed.data : parsed;
+        })
+      );
+  }
+
+  delete(id: string): Observable<{ message: string; productId: string }> {
+    return this.http.delete<{ message: string; productId: string }>(
+      `${this.apiUrl}/${id}`
+    );
   }
 }

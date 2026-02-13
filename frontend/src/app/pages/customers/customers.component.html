@@ -260,4 +260,15 @@
       </div>
     }
   </div>
+  @if (showDeleteModal() && customerToDelete()) {
+  <app-confirm-modal
+    title="Eliminar cliente"
+    [message]="'¿Estás seguro de eliminar al cliente &quot;' + customerToDelete()!.name + '&quot;? Esta acción no se puede deshacer.'"
+    confirmText="Eliminar"
+    cancelText="Cancelar"
+    confirmClass="bg-red-600 hover:bg-red-700"
+    (confirm)="onDeleteConfirmed()"
+    (cancel)="closeDeleteModal()"
+  />
+}
 </div>

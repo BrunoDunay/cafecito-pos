@@ -1,8 +1,9 @@
+// sale.service.ts - ACTUALIZADO
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../enviroments/enviroment';
-import { saleSchema, Sale } from '../types/sale'; 
+import { saleSchema, Sale } from '../types/sale';
 
 @Injectable({ providedIn: 'root' })
 export class SaleService {
@@ -14,21 +15,84 @@ export class SaleService {
     customerId?: string;
     paymentMethod: string;
     items: { productId: string; quantity: number }[];
+    discountPercent?: number;
+    discountAmount?: number;
   }) {
+    console.log('Payload en frontend (camelCase):', payload);
     
-    return this.http.post(this.apiUrl, payload).pipe(
-      map((response) => saleSchema.parse(response))
+    return this.http.post<any>(this.apiUrl, payload).pipe(
+      map((response) => {
+        console.log('Respuesta completa:', response);
+        // Si la respuesta tiene estructura {data: {...}}
+        const saleData = response.data || response;
+        console.log('Datos para validar:', saleData);
+        return saleSchema.parse(saleData);
+      })
     );
   }
 
   getSales(page: number = 1, limit: number = 20) {
     const params = { page, limit };
-    return this.http.get(this.apiUrl, { params });
+    return this.http.get<any>(this.apiUrl, { params }).pipe(
+      map((response) => {
+        console.log('Respuesta de /sales:', response);
+        
+        // Verifica la estructura de la respuesta
+        if (Array.isArray(response)) {
+          // Si es un array directo
+          return {
+            sales: response,
+            pagination: {
+              page,
+              limit,
+              total: response.length,
+              pages: Math.ceil(response.length / limit)
+            }
+          };
+        } else if (response.sales && Array.isArray(response.sales)) {
+          // Si tiene estructura {sales: [], pagination: {}}
+          return {
+            sales: response.sales,
+            pagination: response.pagination || {
+              page,
+              limit,
+              total: response.sales.length,
+              pages: Math.ceil(response.sales.length / limit)
+            }
+          };
+        } else if (response.data && Array.isArray(response.data)) {
+          // Si tiene estructura {data: [], pagination: {}}
+          return {
+            sales: response.data,
+            pagination: response.pagination || {
+              page,
+              limit,
+              total: response.data.length,
+              pages: Math.ceil(response.data.length / limit)
+            }
+          };
+        }
+        
+        // Por defecto, asumir que es un array
+        return {
+          sales: Array.isArray(response) ? response : [],
+          pagination: {
+            page,
+            limit,
+            total: Array.isArray(response) ? response.length : 0,
+            pages: 1
+          }
+        };
+      })
+    );
   }
 
   getSaleById(id: string) {
-    return this.http.get(`${this.apiUrl}/${id}`).pipe(
-      map((response) => saleSchema.parse(response))
+    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+      map((response) => {
+        const saleData = response.data || response;
+        return saleSchema.parse(saleData);
+      })
     );
   }
 }

@@ -1,19 +1,21 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UserService, CreateUserDto, createUserSchema } from '../../../core/services/user.service';
+import { UserService, UpdateUserDto, updateUserSchema } from '../../../core/services/user.service';
+import { User } from '../../../core/types/user';
 import z from 'zod';
 
 @Component({
-  selector: 'app-create-user',
+  selector: 'app-edit-user',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './create-user.component.html',
-  styleUrls: ['./create-user.component.css']
+  templateUrl: './edit-user.component.html',
+  styleUrls: ['./edit-user.component.css']
 })
-export class CreateUserComponent implements OnInit {
+export class EditUserComponent implements OnInit {
+  @Input() user!: User;
   @Output() close = new EventEmitter<void>();
-  @Output() userCreated = new EventEmitter<any>();
+  @Output() userUpdated = new EventEmitter<User>();
 
   userForm!: FormGroup;
   isLoading = false;
@@ -26,15 +28,27 @@ export class CreateUserComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
+    this.loadUserData();
   }
 
   private initForm(): void {
     this.userForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      role: ['seller', Validators.required]
+      role: ['seller', Validators.required],
+      isActive: [true]
     });
+  }
+
+  private loadUserData(): void {
+    if (this.user) {
+      this.userForm.patchValue({
+        name: this.user.name,
+        email: this.user.email,
+        role: this.user.role,
+        isActive: this.user.isActive
+      });
+    }
   }
 
   onSubmit(): void {
@@ -48,15 +62,15 @@ export class CreateUserComponent implements OnInit {
 
     const formValue = this.userForm.value;
     
-    const userData: CreateUserDto = {
+    const userData: UpdateUserDto = {
       name: formValue.name.trim(),
       email: formValue.email.trim().toLowerCase(),
-      password: formValue.password,
-      role: formValue.role
+      role: formValue.role,
+      isActive: formValue.isActive
     };
 
     try {
-      createUserSchema.parse(userData);
+      updateUserSchema.parse(userData);
     } catch (error) {
       if (error instanceof z.ZodError) {
         this.errorMessage = error.issues[0]?.message || 'Error de validación';
@@ -65,13 +79,13 @@ export class CreateUserComponent implements OnInit {
       }
     }
 
-    this.userService.create(userData).subscribe({
+    this.userService.update(this.user.userId, userData).subscribe({
       next: (user) => {
-        this.userCreated.emit(user);
+        this.userUpdated.emit(user);
         this.onClose();
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'Error al crear el usuario';
+        this.errorMessage = err.error?.message || 'Error al actualizar el usuario';
         this.isLoading = false;
       }
     });

@@ -38,12 +38,6 @@ const saleItemSchema = new mongoose.Schema(
 
 const saleSchema = new mongoose.Schema(
   {
-    sale_number: {
-      type: String,
-      required: true,
-      unique: true
-    },
-
     customer_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Customer',

@@ -17,7 +17,6 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./components/main/main.component').then((c) => c.MainComponent),
     children: [
-      
       {
         path: '',
         pathMatch: 'full',
@@ -45,8 +44,16 @@ export const routes: Routes = [
       {
         path: 'sales',
         loadComponent: () =>
-          import('./pages/sale/sale.component').then((c) => c.SaleComponent),
+          import('./pages/sales/sales.component').then((c) => c.SalesComponent),
         title: 'Ventas',
+      },
+      {
+        path: 'checkout',
+        loadComponent: () =>
+          import('./components/checkout/checkout.component').then(
+            (c) => c.CheckoutComponent,
+          ),
+        title: 'Checkout',
       },
 
       {

@@ -1,0 +1,23 @@
+@if (isVisible) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 animate-fade-in">
+    <div class="bg-white p-8 rounded-xl text-center max-w-md w-[90%] shadow-2xl animate-slide-in">
+      <div class="text-6xl mb-5 animate-bounce">
+        ✅
+      </div>
+      
+      <h2 class="text-2xl font-bold mb-3 text-green-600">
+        {{ title }}
+      </h2>
+      
+      <p class="text-gray-600 mb-4 text-lg">
+        {{ message }}
+      </p>
+      
+      @if (details) {
+        <div class="mt-4 p-3 bg-gray-50 rounded-lg font-mono text-sm text-gray-800">
+          {{ details }}
+        </div>
+      }
+    </div>
+  </div>
+}

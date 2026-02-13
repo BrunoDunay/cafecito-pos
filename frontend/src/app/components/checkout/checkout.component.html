@@ -1,1 +1,197 @@
-<p>checkout works!</p>
+<div class="checkout-page">
+  <div class="checkout-grid">
+    <div class="checkout-summary">
+      <div class="summary-card">
+        <h2 class="section-title">Resumen de la Venta</h2>
+
+        <div class="customer-section">
+          <h3 class="subsection-title">Cliente</h3>
+          @if (cart().customer) {
+            <div class="customer-info">
+              <div class="customer-avatar">
+                {{ cart().customer!.name.charAt(0).toUpperCase() }}
+              </div>
+              <div class="customer-details">
+                <div class="customer-name">{{ cart().customer!.name }}</div>
+                <div class="customer-meta">
+                  <span class="purchases-count">
+                    {{ cart().customer!.purchasesCount }} compras
+                  </span>
+                  @if (cart().discountPercent > 0) {
+                    <span class="discount-badge">
+                      -{{ cart().discountPercent }}% descuento
+                    </span>
+                  }
+                </div>
+              </div>
+            </div>
+          } @else {
+            <div class="no-customer">
+              <span class="customer-label">Cliente general</span>
+              <span class="customer-note">(Sin cliente asignado)</span>
+            </div>
+          }
+        </div>
+
+        <div class="products-section">
+          <h3 class="subsection-title">Productos</h3>
+          <div class="products-list">
+            @for (item of cart().items; track item.productId) {
+              <div class="product-item">
+                <div class="product-image">
+                  @if (item.product.image) {
+                    <img [src]="item.product.image" [alt]="item.product.name" />
+                  } @else {
+                    <div class="image-placeholder">
+                      {{ item.product.name.charAt(0).toUpperCase() }}
+                    </div>
+                  }
+                </div>
+                <div class="product-info">
+                  <div class="product-name">{{ item.product.name }}</div>
+                  <div class="product-meta">
+                    <span class="product-price">
+                      {{ formatCurrency(item.unitPrice) }} × {{ item.quantity }}
+                    </span>
+                  </div>
+                </div>
+                <div class="product-total">
+                  {{ formatCurrency(item.lineTotal) }}
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="totals-section">
+          <h3 class="subsection-title">Totales</h3>
+          <div class="totals-list">
+            <div class="total-row">
+              <span class="total-label">Subtotal:</span>
+              <span class="total-value">{{
+                formatCurrency(cart().subtotal)
+              }}</span>
+            </div>
+
+            @if (cart().discountPercent > 0) {
+              <div class="total-row discount">
+                <span class="total-label">
+                  Descuento ({{ cart().discountPercent }}%):
+                </span>
+                <span class="total-value discount-value">
+                  -{{ formatCurrency(cart().discountAmount) }}
+                </span>
+              </div>
+            }
+
+            <div class="total-row grand-total">
+              <span class="total-label">Total:</span>
+              <span class="total-value grand-total-value">
+                {{ formatCurrency(cart().total) }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="checkout-payment">
+      <div class="payment-card">
+        <h2 class="section-title">Método de Pago</h2>
+
+        <div class="payment-methods">
+          <h3 class="subsection-title">Selecciona el método:</h3>
+          <div class="methods-grid">
+            @for (method of paymentMethods; track method.id) {
+              <label class="method-option">
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  [value]="method.id"
+                  [checked]="paymentMethod() === method.id"
+                  (change)="updatePaymentMethod(method.id)"
+                  class="method-radio"
+                />
+                <div
+                  class="method-card"
+                  [class.selected]="paymentMethod() === method.id"
+                >
+                  <span class="method-icon">{{ method.icon }}</span>
+                  <span class="method-name">{{ method.name }}</span>
+                </div>
+              </label>
+            }
+          </div>
+        </div>
+
+        @if (showCashInput()) {
+          <div class="cash-section">
+            <h3 class="subsection-title">Efectivo</h3>
+            <div class="cash-input-group">
+              <label for="cashAmount" class="cash-label">Recibido:</label>
+              <div class="cash-input-wrapper">
+                <span class="currency-symbol">$</span>
+                <input
+                  type="number"
+                  id="cashAmount"
+                  min="0"
+                  step="0.01"
+                  [value]="cashAmount()"
+                  (input)="updateCashAmount($event)"
+                  placeholder="0.00"
+                  class="cash-input"
+                />
+              </div>
+            </div>
+
+            @if (changeAmount() > 0) {
+              <div class="change-display">
+                <span class="change-label">Cambio a entregar:</span>
+                <span class="change-amount">
+                  {{ formatCurrency(changeAmount()) }}
+                </span>
+              </div>
+            } @else if (cashAmount() > 0 && cashAmount() < cart().total) {
+              <div class="insufficient-cash">
+                <span class="warning-icon">⚠️</span>
+                <span class="warning-text">
+                  Faltan {{ formatCurrency(cart().total - cashAmount()) }}
+                </span>
+              </div>
+            }
+          </div>
+        }
+
+        <div class="payment-actions">
+          <button
+            [disabled]="isProcessing() || cart().isEmpty"
+            (click)="processSale()"
+            class="btn-confirm"
+          >
+            @if (isProcessing()) {
+              <span class="processing-spinner"></span>
+              <span>Procesando venta...</span>
+            } @else {
+              <span class="confirm-icon">✅</span>
+              <span>Confirmar Venta</span>
+              <span class="total-amount">{{
+                formatCurrency(cart().total)
+              }}</span>
+            }
+          </button>
+
+          <p class="payment-note">
+            Al confirmar, se registrará la venta, actualizará el inventario y se
+            incrementará el contador de compras del cliente.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-success
+    [isVisible]="showSuccessModal()"
+    [title]="successTitle()"
+    [message]="successMessage()"
+    [details]="saleDetails()"
+  ></app-success>
+</div>

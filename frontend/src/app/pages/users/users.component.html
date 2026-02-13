@@ -1,1 +1,135 @@
-<p>users works!</p>
+<div class="p-6">
+  <!-- Header con título y botón nuevo -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Usuarios</h1>
+    
+    @if (isAdmin) {
+      <button
+        (click)="openCreateModal()"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6z" />
+          <path fill-rule="evenodd" d="M13 5a1 1 0 011 1v2h2a1 1 0 110 2h-2v2a1 1 0 11-2 0v-2h-2a1 1 0 110-2h2V6a1 1 0 011-1z" clip-rule="evenodd" />
+        </svg>
+        Nuevo usuario
+      </button>
+    }
+  </div>
+
+  <!-- Buscador -->
+  <div class="mb-6">
+    <div class="relative">
+      <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+        <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+        </svg>
+      </div>
+      <input
+        type="search"
+        (input)="onSearch($event)"
+        class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500"
+        placeholder="Buscar por nombre, email o rol..."
+      />
+    </div>
+  </div>
+
+  <!-- Tabla de usuarios -->
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left text-gray-500">
+      <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+        <tr>
+          <th scope="col" class="px-6 py-3">Nombre</th>
+          <th scope="col" class="px-6 py-3">Email</th>
+          <th scope="col" class="px-6 py-3">Rol</th>
+          <th scope="col" class="px-6 py-3">Estado</th>
+          <th scope="col" class="px-6 py-3">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of filteredUsers; track user.userId) {
+          <tr class="bg-white border-b hover:bg-gray-50">
+            <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+              {{ user.name }}
+            </td>
+            <td class="px-6 py-4">
+              {{ user.email }}
+            </td>
+            <td class="px-6 py-4">
+              <span [class]="'px-2 py-1 text-xs font-medium rounded-full ' + getRoleBadgeColor(user.role)">
+                {{ user.role === 'admin' ? 'Administrador' : 'Vendedor' }}
+              </span>
+            </td>
+            <td class="px-6 py-4">
+              <button
+                (click)="toggleActive(user)"
+                [class]="user.isActive
+                  ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                  : 'bg-gray-100 text-gray-800 hover:bg-gray-200'"
+                class="px-2 py-1 text-xs font-medium rounded-full transition-colors"
+              >
+                {{ user.isActive ? 'Activo' : 'Inactivo' }}
+              </button>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex gap-2">
+                <button
+                  (click)="openEditModal(user)"
+                  class="text-blue-600 hover:text-blue-900 font-medium text-xs px-2 py-1 border border-blue-600 rounded hover:bg-blue-50 transition-colors"
+                >
+                  Editar
+                </button>
+                @if (user.userId !== authService.getUser()?.userId) {
+                  <button
+                    (click)="confirmDelete(user)"
+                    class="text-red-600 hover:text-red-900 font-medium text-xs px-2 py-1 border border-red-600 rounded hover:bg-red-50 transition-colors"
+                  >
+                    Eliminar
+                  </button>
+                }
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr class="bg-white border-b">
+            <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+              @if (searchTerm) {
+                No se encontraron usuarios para "{{ searchTerm }}"
+              } @else {
+                No hay usuarios registrados
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modales -->
+  @if (showCreateModal) {
+    <app-create-user
+      (close)="closeCreateModal()"
+      (userCreated)="onUserCreated($event)"
+    />
+  }
+
+  @if (showEditModal && selectedUser) {
+    <app-edit-user
+      [user]="selectedUser"
+      (close)="closeEditModal()"
+      (userUpdated)="onUserUpdated($event)"
+    />
+  }
+
+  @if (showDeleteModal && userToDelete) {
+  <app-confirm-modal
+    title="Eliminar usuario"
+    [message]="'¿Estás seguro de eliminar al usuario &quot;' + userToDelete.name + '&quot;? Esta acción no se puede deshacer.'"
+    confirmText="Eliminar"
+    cancelText="Cancelar"
+    confirmClass="bg-red-600 hover:bg-red-700"
+    (confirm)="onDeleteConfirmed()"
+    (cancel)="closeDeleteModal()"
+  />
+}
+</div>

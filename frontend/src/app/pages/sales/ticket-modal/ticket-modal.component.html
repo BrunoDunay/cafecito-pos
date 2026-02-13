@@ -1,0 +1,104 @@
+<!-- components/sales/ticket-modal/ticket-modal.component.html - OPCIÓN 2 -->
+@if (isVisible && sale) {
+  <div class="modal-overlay" (click)="hide()">
+    <div class="ticket-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">Ticket de Venta</h2>
+        <button class="close-btn" (click)="hide()">×</button>
+      </div>
+
+      <div class="ticket-content">
+        <div class="ticket-header">
+          <div class="ticket-title">CAFETERÍA POS SYSTEM</div>
+          <div class="ticket-subtitle">Ticket de Venta</div>
+        </div>
+
+        <div class="ticket-info">
+          <div class="info-row">
+            <span class="info-label">Venta ID:</span>
+            <span class="info-value">{{ sale.saleId }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Fecha:</span>
+            <span class="info-value">{{ formatDate(sale.createdAt) }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Hora:</span>
+            <span class="info-value">{{ formatTime(sale.createdAt) }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Método de pago:</span>
+            <span class="info-value">{{ getPaymentMethodLabel(sale.paymentMethod) }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Cliente:</span>
+            <span class="info-value">{{ sale.customerName || (sale.customerId ? 'Cliente registrado' : 'Venta general') }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Vendido por:</span>
+            <span class="info-value">{{ sale.soldByName || 'Vendedor' }}</span>
+          </div>
+        </div>
+
+        <div class="separator"></div>
+
+        <div class="products-section">
+          <div class="products-header">
+            <div class="product-col product-name">Producto</div>
+            <div class="product-col product-qty">Cant.</div>
+            <div class="product-col product-price">Precio Unit.</div>
+            <div class="product-col product-total">Total</div>
+          </div>
+
+          @for (item of sale.items; track item.productId) {
+            <div class="product-row">
+              <div class="product-col product-name">
+                {{ item.productNameSnapshot }}
+              </div>
+              <div class="product-col product-qty">
+                {{ item.quantity }}
+              </div>
+              <div class="product-col product-price">
+                {{ formatCurrency(item.unitPriceSnapshot) }}
+              </div>
+              <div class="product-col product-total">
+                {{ formatCurrency(item.lineTotal) }}
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="separator"></div>
+
+        <div class="totals-section">
+          <div class="total-row">
+            <span class="total-label">Subtotal:</span>
+            <span class="total-value">{{ formatCurrency(sale.subtotal) }}</span>
+          </div>
+
+          @if (sale.discountPercent > 0) {
+            <div class="total-row discount-row">
+              <span class="total-label">Descuento ({{ sale.discountPercent }}%):</span>
+              <span class="total-value discount-value">-{{ formatCurrency(sale.discountAmount) }}</span>
+            </div>
+          }
+
+          <div class="total-row grand-total">
+            <span class="total-label">Total:</span>
+            <span class="total-value grand-total-value">{{ formatCurrency(sale.total) }}</span>
+          </div>
+        </div>
+
+        <div class="ticket-footer">
+          <p class="footer-text">¡Gracias por su compra!</p>
+          <p class="footer-text">Vuelva pronto</p>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-print" (click)="printTicket()">🖨️ Imprimir</button>
+        <button class="btn-close" (click)="hide()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+}

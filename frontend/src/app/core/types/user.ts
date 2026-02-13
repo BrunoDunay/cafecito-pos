@@ -9,7 +9,6 @@ export const userSchema = z.object({
   isActive: z.boolean(),
 });
 
-// Credenciales para login
 export type UserCredentials = {
   email: string;
   password: string;

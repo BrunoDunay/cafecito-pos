@@ -1,0 +1,271 @@
+/* components/sales/ticket-modal/ticket-modal.component.css */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.ticket-modal {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e5e5e5;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px 12px 0 0;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.ticket-content {
+  padding: 20px;
+}
+
+.ticket-header {
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px dashed #e5e5e5;
+}
+
+.ticket-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.ticket-subtitle {
+  font-size: 1rem;
+  color: #666;
+}
+
+.ticket-info {
+  margin-bottom: 20px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 4px 0;
+}
+
+.info-label {
+  font-weight: 500;
+  color: #555;
+}
+
+.info-value {
+  color: #333;
+  font-weight: 500;
+}
+
+.separator {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e5e5e5, transparent);
+  margin: 20px 0;
+}
+
+.products-section {
+  margin-bottom: 20px;
+}
+
+.products-header {
+  display: flex;
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 10px;
+}
+
+.product-col {
+  flex: 1;
+  text-align: center;
+}
+
+.product-col.product-name {
+  flex: 3;
+  text-align: left;
+}
+
+.product-row {
+  display: flex;
+  padding: 8px 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.product-row:last-child {
+  border-bottom: none;
+}
+
+.totals-section {
+  margin-top: 20px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 1rem;
+}
+
+.total-row.discount-row {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.total-row.grand-total {
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-top: 2px solid #333;
+  margin-top: 10px;
+  padding-top: 15px;
+}
+
+.total-label {
+  color: #555;
+}
+
+.total-value {
+  font-weight: 600;
+}
+
+.discount-value {
+  color: #28a745;
+}
+
+.grand-total-value {
+  color: #007bff;
+  font-size: 1.3rem;
+}
+
+.ticket-footer {
+  text-align: center;
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 2px dashed #e5e5e5;
+}
+
+.footer-text {
+  margin: 5px 0;
+  color: #666;
+  font-style: italic;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  padding: 20px;
+  border-top: 1px solid #e5e5e5;
+  background: #f8f9fa;
+  border-radius: 0 0 12px 12px;
+}
+
+.btn-print,
+.btn-close {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-print {
+  background: #28a745;
+  color: white;
+}
+
+.btn-print:hover {
+  background: #218838;
+}
+
+.btn-close {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-close:hover {
+  background: #5a6268;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ticket-modal {
+    width: 95%;
+    margin: 10px;
+  }
+
+  .product-col {
+    font-size: 0.9rem;
+  }
+
+  .products-header {
+    flex-wrap: wrap;
+  }
+}

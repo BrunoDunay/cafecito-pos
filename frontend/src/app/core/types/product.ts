@@ -1,6 +1,5 @@
 import z from 'zod';
 
-// Schema para producto
 export const productSchema = z.object({
   productId: z.string(),
   name: z.string(),
