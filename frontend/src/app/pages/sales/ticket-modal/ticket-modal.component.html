@@ -1,103 +1,134 @@
-<!-- components/sales/ticket-modal/ticket-modal.component.html - OPCIÓN 2 -->
 @if (isVisible && sale) {
-  <div class="modal-overlay" (click)="hide()">
-    <div class="ticket-modal" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h2 class="modal-title">Ticket de Venta</h2>
-        <button class="close-btn" (click)="hide()">×</button>
+  <div
+    class="fixed inset-0 z-[1000] flex items-center justify-center bg-black/50 animate-[fadeIn_.3s_ease]"
+    (click)="hide()"
+  >
+    <div
+      class="w-[90%] max-w-[600px] max-h-[90vh] overflow-y-auto rounded-xl bg-white shadow-[0_10px_30px_rgba(0,0,0,.3)] animate-[slideIn_.3s_ease]"
+      (click)="$event.stopPropagation()"
+    >
+      <div
+        class="flex items-center justify-between px-5 py-5 text-white rounded-t-xl border-b border-white/10
+               bg-[var(--edit)]"
+      >
+        <h2 class="m-0 text-2xl font-semibold">Ticket de Venta</h2>
+
+        <button
+          class="grid h-10 w-10 place-items-center rounded-full bg-white/20 text-3xl leading-none transition hover:bg-white/30"
+          (click)="hide()"
+          aria-label="Cerrar"
+        >
+          ×
+        </button>
       </div>
-
-      <div class="ticket-content">
-        <div class="ticket-header">
-          <div class="ticket-title">CAFETERÍA POS SYSTEM</div>
-          <div class="ticket-subtitle">Ticket de Venta</div>
+      <div class="ticket-content p-5">
+        <div class="text-center mb-5 pb-4 border-b-2 border-dashed border-gray-200">
+          <div class="text-[1.3rem] font-bold text-gray-800">CAFETERÍA POS SYSTEM</div>
+          <div class="text-base text-gray-500">Ticket de Venta</div>
         </div>
 
-        <div class="ticket-info">
-          <div class="info-row">
-            <span class="info-label">Venta ID:</span>
-            <span class="info-value">{{ sale.saleId }}</span>
+        <div class="mb-5 space-y-2">
+          <div class="flex justify-between py-1">
+            <span class="font-medium text-gray-600">Venta ID:</span>
+            <span class="font-medium text-gray-800">{{ sale.saleId }}</span>
           </div>
-          <div class="info-row">
-            <span class="info-label">Fecha:</span>
-            <span class="info-value">{{ formatDate(sale.createdAt) }}</span>
+          <div class="flex justify-between py-1">
+            <span class="font-medium text-gray-600">Fecha:</span>
+            <span class="font-medium text-gray-800">{{ formatDate(sale.createdAt) }}</span>
           </div>
-          <div class="info-row">
-            <span class="info-label">Hora:</span>
-            <span class="info-value">{{ formatTime(sale.createdAt) }}</span>
+          <div class="flex justify-between py-1">
+            <span class="font-medium text-gray-600">Hora:</span>
+            <span class="font-medium text-gray-800">{{ formatTime(sale.createdAt) }}</span>
           </div>
-          <div class="info-row">
-            <span class="info-label">Método de pago:</span>
-            <span class="info-value">{{ getPaymentMethodLabel(sale.paymentMethod) }}</span>
+          <div class="flex justify-between py-1">
+            <span class="font-medium text-gray-600">Método de pago:</span>
+            <span class="font-medium text-gray-800">{{ getPaymentMethodLabel(sale.paymentMethod) }}</span>
           </div>
-          <div class="info-row">
-            <span class="info-label">Cliente:</span>
-            <span class="info-value">{{ sale.customerName || (sale.customerId ? 'Cliente registrado' : 'Venta general') }}</span>
+          <div class="flex justify-between py-1">
+            <span class="font-medium text-gray-600">Cliente:</span>
+            <span class="font-medium text-gray-800">
+              {{ sale.customerName || (sale.customerId ? 'Cliente registrado' : 'Venta general') }}
+            </span>
           </div>
-          <div class="info-row">
-            <span class="info-label">Vendido por:</span>
-            <span class="info-value">{{ sale.soldByName || 'Vendedor' }}</span>
+          <div class="flex justify-between py-1">
+            <span class="font-medium text-gray-600">Vendido por:</span>
+            <span class="font-medium text-gray-800">{{ sale.soldByName || 'Vendedor' }}</span>
           </div>
         </div>
 
-        <div class="separator"></div>
+        <div class="my-5 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
 
-        <div class="products-section">
-          <div class="products-header">
-            <div class="product-col product-name">Producto</div>
-            <div class="product-col product-qty">Cant.</div>
-            <div class="product-col product-price">Precio Unit.</div>
-            <div class="product-col product-total">Total</div>
+        <div class="mb-5">
+          <div
+            class="mb-2 flex flex-wrap items-center gap-2 rounded-md bg-gray-50 px-3 py-2 font-semibold text-gray-700"
+          >
+            <div class="flex-[3] text-left">Producto</div>
+            <div class="flex-1 text-center">Cant.</div>
+            <div class="flex-1 text-center">Precio Unit.</div>
+            <div class="flex-1 text-center">Total</div>
           </div>
 
           @for (item of sale.items; track item.productId) {
-            <div class="product-row">
-              <div class="product-col product-name">
+            <div class="flex items-center px-3 py-2 border-b border-gray-100 last:border-b-0">
+              <div class="flex-[3] text-left text-gray-800">
                 {{ item.productNameSnapshot }}
               </div>
-              <div class="product-col product-qty">
+              <div class="flex-1 text-center text-gray-700">
                 {{ item.quantity }}
               </div>
-              <div class="product-col product-price">
+              <div class="flex-1 text-center text-gray-700">
                 {{ formatCurrency(item.unitPriceSnapshot) }}
               </div>
-              <div class="product-col product-total">
+              <div class="flex-1 text-center font-medium text-gray-800">
                 {{ formatCurrency(item.lineTotal) }}
               </div>
             </div>
           }
         </div>
 
-        <div class="separator"></div>
+        <div class="my-5 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
 
-        <div class="totals-section">
-          <div class="total-row">
-            <span class="total-label">Subtotal:</span>
-            <span class="total-value">{{ formatCurrency(sale.subtotal) }}</span>
+        <div class="mt-5 space-y-1">
+          <div class="flex justify-between py-2 text-base">
+            <span class="text-gray-600">Subtotal:</span>
+            <span class="font-semibold text-gray-800">{{ formatCurrency(sale.subtotal) }}</span>
           </div>
 
           @if (sale.discountPercent > 0) {
-            <div class="total-row discount-row">
-              <span class="total-label">Descuento ({{ sale.discountPercent }}%):</span>
-              <span class="total-value discount-value">-{{ formatCurrency(sale.discountAmount) }}</span>
+            <div class="flex justify-between py-2 text-base font-semibold text-[color:var(--cat-active)]">
+              <span>Descuento ({{ sale.discountPercent }}%):</span>
+              <span>-{{ formatCurrency(sale.discountAmount) }}</span>
             </div>
           }
 
-          <div class="total-row grand-total">
-            <span class="total-label">Total:</span>
-            <span class="total-value grand-total-value">{{ formatCurrency(sale.total) }}</span>
+          <div class="mt-2 flex justify-between border-t-2 border-gray-800 pt-4 text-xl font-bold">
+            <span class="text-gray-700">Total:</span>
+            <span class="text-[color:var(--cat-active)] text-[1.3rem]">{{ formatCurrency(sale.total) }}</span>
           </div>
         </div>
 
-        <div class="ticket-footer">
-          <p class="footer-text">¡Gracias por su compra!</p>
-          <p class="footer-text">Vuelva pronto</p>
+        <div class="mt-6 pt-4 text-center border-t-2 border-dashed border-gray-200">
+          <p class="my-1 italic text-gray-500">¡Gracias por su compra!</p>
+          <p class="my-1 italic text-gray-500">Vuelva pronto</p>
         </div>
       </div>
 
-      <div class="modal-actions">
-        <button class="btn-print" (click)="printTicket()">🖨️ Imprimir</button>
-        <button class="btn-close" (click)="hide()">Cerrar</button>
+      <div class="flex gap-2 p-5 border-t border-gray-200 bg-gray-50 rounded-b-xl">
+        <button
+          class="flex-1 rounded-md px-3 py-3 text-base font-semibold text-white transition
+                 bg-[color:var(--edit)] hover:brightness-95 active:brightness-90"
+          (click)="printTicket()"
+        >
+          🖨️ Imprimir
+        </button>
+
+        <button
+          class="flex-1 rounded-md px-3 py-3 text-base font-semibold text-white transition
+                 bg-[color:var(--action)] hover:brightness-95 active:brightness-90"
+          (click)="hide()"
+        >
+          Cerrar
+        </button>
       </div>
     </div>
   </div>

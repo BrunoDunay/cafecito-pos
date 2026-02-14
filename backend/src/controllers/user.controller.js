@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import bcrypt from 'bcryptjs';
 
 /* Convierte usuario a snake_case */
 const mapUser = (u) => ({
@@ -25,24 +26,36 @@ export const getUserById = async (req, res) => {
 
 /* Actualizar usuario */
 export const updateUser = async (req, res) => {
-  const { name, email, role, is_active } = req.body;
+  const { name, email, role, is_active, password } = req.body;
+  
+  const updateData = { name, email, role, is_active };
+  
+  if (password) {
+    updateData.password = await bcrypt.hash(password, 10);
+  }
+  
   const user = await User.findByIdAndUpdate(
     req.params.id,
-    { name, email, role, is_active },
+    updateData,
     { new: true }
   ).select("-password");
+  
   res.json(mapUser(user));
 };
 
 /* Crear usuario */
 export const createUser = async (req, res) => {
   const { name, email, password, role } = req.body;
+  
+  const hashedPassword = await bcrypt.hash(password, 10);
+  
   const user = await User.create({ 
     name, 
     email, 
-    password, 
+    password: hashedPassword, 
     role 
   });
+  
   res.status(201).json(mapUser(user));
 };
 

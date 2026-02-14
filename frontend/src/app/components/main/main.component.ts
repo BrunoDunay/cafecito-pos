@@ -3,6 +3,7 @@ import { RouterOutlet, RouterLink } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 import { CartComponent } from "../../pages/cart/cart.component";
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-main',
@@ -11,4 +12,10 @@ import { CartComponent } from "../../pages/cart/cart.component";
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css'],
 })
-export class MainComponent {}
+export class MainComponent {
+  constructor(private authService: AuthService) {}
+
+  get isAdmin(): boolean {
+    return this.authService.getRole() === 'admin';
+  }
+}

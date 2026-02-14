@@ -1,26 +1,31 @@
-<!-- components/sales/sales.component.html -->
-<div class="min-h-screen bg-gray-50 p-4 md:p-6">
+<div class="min-h-screen p-4 md:p-6 bg-[var(--bg-color)]">
   <div class="max-w-7xl mx-auto">
-    <!-- Header -->
-    <div class="mb-8 text-center">
-      <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">📊 Historial de Ventas</h2>
+    <div class="mb-6">
+      <h2 class="text-[18px] md:text-[22px] font-bold text-[#354044]">
+        Historial de Ventas
+      </h2>
+      <p class="text-[12px] text-[#354044]/65 mt-1">
+        Consulta ventas registradas
+      </p>
     </div>
 
-    <!-- Estados -->
     @if (loading()) {
-      <div class="flex flex-col items-center justify-center py-16 bg-white rounded-xl shadow-sm">
-        <div class="w-12 h-12 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin mb-4"></div>
-        <p class="text-gray-600 text-lg">Cargando ventas...</p>
+      <div class="bg-[#f2f1ed] rounded-2xl border border-black/10 shadow-[0_20px_50px_rgba(0,0,0,.10)] p-8 text-center">
+        <div class="mx-auto mb-3 h-10 w-10 rounded-full border-4 border-black/10 border-t-[#87b26d] animate-spin"></div>
+        <p class="text-[13px] text-[#354044]/75">Cargando ventas...</p>
       </div>
     }
 
     @if (error()) {
-      <div class="bg-white rounded-xl shadow-sm p-6 text-center">
-        <div class="text-red-500 text-3xl mb-3">❌</div>
-        <p class="text-gray-700 text-lg mb-4">{{ error() }}</p>
-        <button 
+      <div class="bg-[#f2f1ed] rounded-2xl border border-black/10 shadow-[0_20px_50px_rgba(0,0,0,.10)] p-8 text-center">
+        <div class="text-[28px] mb-2">❌</div>
+        <p class="text-[13px] text-[#354044] mb-4">{{ error() }}</p>
+        <button
           (click)="loadSales()"
-          class="px-6 py-2.5 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors"
+          class="px-4 py-2 text-[12px] font-semibold rounded-xl
+                 bg-[#354044] text-white
+                 hover:opacity-95 transition
+                 shadow-[0_14px_26px_rgba(0,0,0,.18)]"
         >
           Reintentar
         </button>
@@ -28,73 +33,82 @@
     }
 
     @if (!loading() && !error() && sales().length === 0) {
-      <div class="bg-white rounded-xl shadow-sm p-8 text-center">
-        <p class="text-gray-500 text-lg">No hay ventas registradas</p>
+      <div class="bg-[#f2f1ed] rounded-2xl border border-black/10 shadow-[0_20px_50px_rgba(0,0,0,.10)] p-8 text-center">
+        <p class="text-[13px] text-[#354044]/70">No hay ventas registradas</p>
       </div>
     }
 
     @if (!loading() && !error() && sales().length > 0) {
-      <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-        <!-- Tabla -->
+      <div class="bg-[#f2f1ed] rounded-2xl border border-black/10 shadow-[0_20px_50px_rgba(0,0,0,.10)] overflow-hidden">
+        <div class="px-4 py-3 bg-[var(--action)] border-b border-black/10 flex items-center justify-between">
+          <div class="text-[13px] font-semibold text-white">
+            Ventas registradas
+          </div>
+          <div class="text-[11px] text-white">
+            Página {{ currentPage() }} de {{ getTotalPages() }}
+          </div>
+        </div>
+
         <div class="overflow-x-auto">
           <table class="w-full">
-            <thead class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
-              <tr>
-                <th class="py-3.5 px-4 text-left text-xs font-semibold uppercase tracking-wider">Número</th>
-                <th class="py-3.5 px-4 text-left text-xs font-semibold uppercase tracking-wider">Fecha</th>
-                <th class="py-3.5 px-4 text-left text-xs font-semibold uppercase tracking-wider">Cliente</th>
-                <th class="py-3.5 px-4 text-left text-xs font-semibold uppercase tracking-wider">Método</th>
-                <th class="py-3.5 px-4 text-left text-xs font-semibold uppercase tracking-wider">Productos</th>
-                <th class="py-3.5 px-4 text-left text-xs font-semibold uppercase tracking-wider">Total</th>
+            <thead class="bg-white/60 border-b border-black/10">
+              <tr class="text-left">
+                <th class="py-3 px-4 text-[11px] font-semibold text-[#354044]/80 uppercase tracking-wide">Número</th>
+                <th class="py-3 px-4 text-[11px] font-semibold text-[#354044]/80 uppercase tracking-wide">Fecha</th>
+                <th class="py-3 px-4 text-[11px] font-semibold text-[#354044]/80 uppercase tracking-wide">Cliente</th>
+                <th class="py-3 px-4 text-[11px] font-semibold text-[#354044]/80 uppercase tracking-wide">Método</th>
+                <th class="py-3 px-4 text-[11px] font-semibold text-[#354044]/80 uppercase tracking-wide text-center">Productos</th>
+                <th class="py-3 px-4 text-[11px] font-semibold text-[#354044]/80 uppercase tracking-wide text-right">Total</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+
+            <tbody class="divide-y divide-black/10">
               @for (sale of sales(); track sale.saleId) {
-                <tr class="hover:bg-gray-50 transition-colors">
-                  <!-- ID -->
-                  <td class="py-3.5 px-4">
-                    <strong class="font-mono text-sm text-gray-800 font-semibold">
+                <tr class="hover:bg-black/5 transition-colors">
+                  <td class="py-3 px-4">
+                    <span class="inline-flex items-center px-2 py-1 rounded-lg bg-white border border-black/10
+                                 font-mono text-[12px] text-[#354044]">
                       {{ sale.saleId.substring(0, 6) }}
-                    </strong>
+                    </span>
                   </td>
-                  
-                  <!-- Fecha -->
-                  <td class="py-3.5 px-4">
-                    <span class="text-sm text-gray-600 whitespace-nowrap">
+
+                  <td class="py-3 px-4">
+                    <span class="text-[12px] text-[#354044]/75 whitespace-nowrap">
                       {{ formatDate(sale.createdAt) }}
                     </span>
                   </td>
-                  
-                  <!-- Cliente -->
-                  <td class="py-3.5 px-4">
-                    <span class="text-sm text-gray-700 truncate block max-w-[150px]">
+
+                  <td class="py-3 px-4">
+                    <span class="text-[12px] text-[#354044] truncate block max-w-[180px]">
                       {{ getCustomerName(sale) }}
                     </span>
                   </td>
-                  
-                  <!-- Método -->
-                  <td class="py-3.5 px-4">
-                    <div class="flex items-center gap-1.5 text-sm min-w-max">
+
+                  <td class="py-3 px-4">
+                    <span class="inline-flex items-center gap-1.5 text-[12px] text-[#354044]/80">
                       {{ getPaymentMethodLabel(sale.paymentMethod) }}
-                    </div>
+                    </span>
                   </td>
-                  
-                  <!-- Productos -->
-                  <td class="py-3.5 px-4 text-center">
-                    <button 
+
+                  <td class="py-3 px-4 text-center">
+                    <button
                       (click)="showTicket(sale)"
-                      class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-emerald-500 text-white text-sm font-medium rounded-full hover:bg-emerald-600 hover:shadow-md transition-all duration-200"
+                      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full
+                             bg-[var(--edit)] text-white text-[12px] font-semibold
+                             hover:opacity-95 transition
+                             shadow-[0_10px_18px_rgba(0,0,0,.12)]"
                     >
-                      <span>{{ sale.items.length }}</span>
-                      <span>producto{{ sale.items.length !== 1 ? 's' : '' }}</span>
+                      <span class="font-bold">{{ sale.items.length }}</span>
+                      <span class="font-medium">
+                        producto{{ sale.items.length !== 1 ? 's' : '' }}
+                      </span>
                     </button>
                   </td>
-                  
-                  <!-- Total -->
-                  <td class="py-3.5 px-4 text-right">
-                    <p class="text-base font-semibold text-blue-600">
+
+                  <td class="py-3 px-4 text-right">
+                    <span class="text-[13px] font-bold text-[#354044]">
                       {{ formatCurrency(sale.total) }}
-                    </p>
+                    </span>
                   </td>
                 </tr>
               }
@@ -102,21 +116,23 @@
           </table>
         </div>
 
-        <!-- Paginación -->
         @if (getTotalPages() > 1) {
-          <div class="border-t border-gray-100 px-6 py-4">
+          <div class="border-t border-black/10 px-4 py-3 bg-white/50">
             <div class="flex items-center justify-between gap-4">
               <button
                 [disabled]="currentPage() === 1"
                 (click)="changePage(currentPage() - 1)"
                 [class.opacity-50]="currentPage() === 1"
                 [class.cursor-not-allowed]="currentPage() === 1"
-                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors disabled:hover:bg-white disabled:hover:border-gray-300"
+                class="px-3 py-2 text-[12px] font-semibold rounded-xl
+                       border border-black/10
+                       bg-white text-[#354044]
+                       hover:bg-black/5 transition"
               >
                 ← Anterior
               </button>
 
-              <span class="text-sm text-gray-600">
+              <span class="text-[12px] text-[#354044]/70">
                 Página {{ currentPage() }} de {{ getTotalPages() }}
               </span>
 
@@ -125,7 +141,10 @@
                 (click)="changePage(currentPage() + 1)"
                 [class.opacity-50]="currentPage() === getTotalPages()"
                 [class.cursor-not-allowed]="currentPage() === getTotalPages()"
-                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors disabled:hover:bg-white disabled:hover:border-gray-300"
+                class="px-3 py-2 text-[12px] font-semibold rounded-xl
+                       border border-black/10
+                       bg-white text-[#354044]
+                       hover:bg-black/5 transition"
               >
                 Siguiente →
               </button>
@@ -136,7 +155,6 @@
     }
   </div>
 
-  <!-- Modal del ticket -->
   <app-ticket-modal
     [sale]="selectedSale()"
     [isVisible]="showTicketModal()"

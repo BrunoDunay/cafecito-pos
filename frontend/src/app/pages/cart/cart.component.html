@@ -1,95 +1,163 @@
-<!-- components/cart/cart.component.html - Versión con búsqueda -->
-<aside class="cart-sidebar">
-  <div class="cart-header">
-    <h3>🛒 Carrito</h3>
+<aside
+  class="fixed right-0 top-0 bottom-0 z-40 w-[320px]
+         flex flex-col
+         bg-white
+         border-l border-black/10
+         shadow-[0_20px_50px_rgba(0,0,0,.12)]"
+>
+  <div class="px-4 py-3 border-b border-black/10 flex items-center justify-between">
+    <h3 class="text-[14px] font-semibold text-[#354044] tracking-wide">
+      🛒 Carrito
+    </h3>
+
     @if (!cart().isEmpty) {
-      <button (click)="clearCart()" class="clear-btn">
+      <button
+        (click)="clearCart()"
+        class="text-[11px] px-2 py-1 rounded-md
+               bg-black/5 text-[#354044]
+               border border-black/10
+               hover:bg-black/10 transition"
+      >
         Vaciar
       </button>
     }
   </div>
-  
-  <!-- Cliente asignado -->
-  <div class="customer-section">
+
+  <div class="px-4 py-3 border-b border-black/10">
     @if (cart().customer) {
-      <div class="assigned-customer">
-        <div class="customer-info">
-          <div class="customer-avatar">
-            {{ cart().customer!.name.charAt(0).toUpperCase() }}
-          </div>
-          <div>
-            <strong>{{ cart().customer!.name }}</strong>
-            <div class="customer-stats">
-              {{ cart().customer!.purchasesCount }} compras
-              @if (cart().discountPercent > 0) {
-                <span class="discount-badge">
-                  -{{ cart().discountPercent }}%
-                </span>
+      <div class="p-3 rounded-xl bg-[#f2f1ed] border border-black/10">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2 min-w-0">
+            <div
+              class="h-8 w-8 rounded-full flex items-center justify-center
+                     text-[11px] font-bold
+                     bg-[#87b26d] text-white"
+            >
+              {{ cart().customer!.name.charAt(0).toUpperCase() }}
+            </div>
+
+            <div class="min-w-0">
+              <div class="text-[12px] font-semibold text-[#354044] truncate">
+                {{ cart().customer!.name }}
+              </div>
+
+              <div class="text-[10px] text-[#354044]/65 flex items-center gap-2">
+                <span>{{ cart().customer!.purchasesCount }} compras</span>
+
+                @if (cart().discountPercent > 0) {
+                  <span
+                    class="px-2 py-0.5 rounded-full text-[10px] font-bold
+                           bg-[#87b26d]/25 text-[#354044]"
+                  >
+                    -{{ cart().discountPercent }}%
+                  </span>
+                }
+              </div>
+
+              @if (discountMessage()) {
+                <div class="mt-1 text-[10px] text-[#354044]/70">
+                  {{ discountMessage() }}
+                </div>
               }
             </div>
-            <!-- Mensaje de descuento -->
-            @if (discountMessage()) {
-              <div class="discount-message">
-                {{ discountMessage() }}
-              </div>
-            }
           </div>
-        </div>
-        <button (click)="removeCustomer()" class="remove-customer-btn">
-          ✕
-        </button>
-      </div>
-    } @else {
-      <div class="no-customer">
-        <button (click)="toggleCustomerSelector()" class="add-customer-btn">
-          + Asignar cliente
-        </button>
-      </div>
-    }
-    
-    <!-- Selector de clientes -->
-    @if (showCustomerSelector()) {
-      <div class="customer-selector">
-        <div class="selector-header">
-          <h4>Seleccionar cliente</h4>
-          
-          <!-- Barra de búsqueda -->
-          <div class="search-container">
-            <input
-              type="text"
-              [value]="searchTerm()"
-              (input)="filterCustomers($any($event.target).value)"
-              placeholder="Buscar por nombre, email o teléfono..."
-              class="search-input"
-            />
-          </div>
-          
-          <button (click)="toggleCustomerSelector()" class="close-selector">
+
+          <button
+            (click)="removeCustomer()"
+            class="h-6 w-6 text-[11px] rounded-md
+                   bg-black/5 border border-black/10
+                   text-[#354044]/80
+                   hover:bg-black/10 transition"
+            type="button"
+            title="Quitar cliente"
+          >
             ✕
           </button>
         </div>
-        
+      </div>
+    } @else {
+      <button
+        (click)="toggleCustomerSelector()"
+        class="w-full py-2 text-[12px] font-medium rounded-lg
+               bg-[#354044] text-white
+               hover:opacity-95 transition"
+        type="button"
+      >
+        + Asignar cliente
+      </button>
+    }
+
+    <!-- Clientes -->
+    @if (showCustomerSelector()) {
+      <div class="mt-3 rounded-xl bg-[#f2f1ed] border border-black/10 overflow-hidden">
+        <div class="px-3 py-2 border-b border-black/10 flex items-center justify-between">
+          <h4 class="text-[12px] font-semibold text-[#354044]">
+            Seleccionar cliente
+          </h4>
+          <button
+            (click)="toggleCustomerSelector()"
+            class="h-6 w-6 text-[11px] rounded-md
+                   bg-black/5 border border-black/10
+                   text-[#354044]/80
+                   hover:bg-black/10 transition"
+            type="button"
+            title="Cerrar"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div class="px-3 py-2 border-b border-black/10">
+          <input
+            type="text"
+            [value]="searchTerm()"
+            (input)="filterCustomers($any($event.target).value)"
+            placeholder="Buscar por nombre, email o teléfono..."
+            class="w-full px-3 py-2 rounded-lg bg-white
+                   border border-black/10
+                   text-[#354044] placeholder:text-[#354044]/45
+                   text-[12px]
+                   focus:outline-none
+                   focus:ring-2 focus:ring-[#87b26d]/30
+                   focus:border-[#87b26d]"
+          />
+        </div>
+
         @if (loadingCustomers()) {
-          <div class="loading-customers">
+          <div class="px-3 py-3 text-[12px] text-[#354044]/70">
             Cargando clientes...
           </div>
         } @else {
-          <div class="customers-list">
+          <div class="max-h-[220px] overflow-y-auto">
             @for (customer of filteredCustomers(); track customer.customerId) {
-              <div 
-                class="customer-option" 
+              <div
+                class="px-3 py-2 flex items-center gap-2 cursor-pointer
+                       hover:bg-black/5 transition"
                 (click)="selectCustomer(customer)"
               >
-                <div class="option-avatar">
+                <div
+                  class="h-8 w-8 rounded-full flex items-center justify-center
+                         text-[11px] font-bold
+                         bg-[#87b26d]/25 text-[#354044] border border-black/10"
+                >
                   {{ customer.name.charAt(0).toUpperCase() }}
                 </div>
-                <div class="option-details">
-                  <div class="option-name">{{ customer.name }}</div>
-                  <div class="option-email">{{ customer.email }}</div>
-                  <div class="option-purchases">
+
+                <div class="min-w-0 flex-1">
+                  <div class="text-[12px] font-semibold text-[#354044] truncate">
+                    {{ customer.name }}
+                  </div>
+                  <div class="text-[10px] text-[#354044]/65 truncate">
+                    {{ customer.email }}
+                  </div>
+
+                  <div class="text-[10px] text-[#354044]/70 mt-0.5">
                     {{ customer.purchasesCount }} compras
                     @if (getCustomerDiscount(customer) > 0) {
-                      <span class="option-discount">
+                      <span
+                        class="ml-2 px-2 py-0.5 rounded-full text-[10px] font-bold
+                               bg-[var(--cat-active)] text-white"
+                      >
                         -{{ getCustomerDiscount(customer) }}%
                       </span>
                     }
@@ -97,15 +165,15 @@
                 </div>
               </div>
             }
-            
+
             @if (filteredCustomers().length === 0 && searchTerm()) {
-              <div class="no-customers-found">
+              <div class="px-3 py-3 text-[12px] text-[#354044]/70">
                 No se encontraron clientes con "{{ searchTerm() }}"
               </div>
             }
-            
+
             @if (filteredCustomers().length === 0 && !searchTerm()) {
-              <div class="no-customers-found">
+              <div class="px-3 py-3 text-[12px] text-[#354044]/70">
                 No hay clientes disponibles
               </div>
             }
@@ -114,93 +182,117 @@
       </div>
     }
   </div>
-  
-  <!-- Lista de productos -->
-  <div class="cart-items">
+
+  <!-- Productos -->
+  <div class="flex-1 overflow-y-auto px-4 py-3 space-y-2">
     @if (cart().isEmpty) {
-      <div class="empty-cart">
-        <p>El carrito está vacío</p>
-        <p class="text-sm text-gray-500">Agrega productos desde la lista</p>
+      <div class="text-center py-6 text-[12px] text-[#354044]/70">
+        El carrito está vacío
       </div>
     }
-    
+
     @for (item of cart().items; track item.productId) {
-      <div class="cart-item">
-        <div class="item-image">
-          @if (item.product.image) {
-            <img [src]="item.product.image" [alt]="item.product.name">
-          } @else {
-            <div class="image-placeholder">
-              {{ item.product.name.charAt(0).toUpperCase() }}
+      <div class="p-2.5 rounded-xl bg-[#f2f1ed] border border-black/10">
+        <div class="flex gap-2">
+          <div class="h-10 w-10 rounded-md overflow-hidden border border-black/10 bg-white">
+            @if (item.product.image) {
+              <img [src]="item.product.image" class="h-full w-full object-cover" />
+            } @else {
+              <div class="h-full w-full flex items-center justify-center text-[11px] font-bold text-[#354044]">
+                {{ item.product.name.charAt(0).toUpperCase() }}
+              </div>
+            }
+          </div>
+
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between items-start gap-2">
+              <h4 class="text-[12px] font-semibold text-[#354044] truncate">
+                {{ item.product.name }}
+              </h4>
+
+              <button
+                (click)="removeItem(item.productId)"
+                class="text-[11px] h-5 w-5 rounded-md
+                       bg-[#e52b08] text-white
+                       flex items-center justify-center"
+                type="button"
+                title="Quitar"
+              >
+                ✕
+              </button>
             </div>
-          }
-        </div>
-        
-        <div class="item-details">
-          <div class="item-header">
-            <h4 class="item-name">{{ item.product.name }}</h4>
-            <button 
-              (click)="removeItem(item.productId)" 
-              class="remove-item-btn"
-            >
-              ✕
-            </button>
+
+            <div class="text-[10px] text-[var(--cat-active)] font-semibold mt-0.5">
+              ${{ item.unitPrice | number:'1.2-2' }}
+            </div>
+
+            <div class="flex items-center justify-between mt-1">
+              <div class="flex items-center gap-1 border border-black/10 rounded-md px-1 py-0.5 bg-white">
+                <button
+                  (click)="decreaseQuantity(item)"
+                  [disabled]="item.quantity <= 1"
+                  class="h-5 w-5 text-[11px] bg-black/5 rounded-md
+                         disabled:opacity-40 disabled:cursor-not-allowed"
+                  type="button"
+                >
+                  −
+                </button>
+
+                <span class="text-[11px] font-semibold w-5 text-center text-[#354044]">
+                  {{ item.quantity }}
+                </span>
+
+                <button
+                  (click)="increaseQuantity(item)"
+                  [disabled]="item.quantity >= item.product.stock"
+                  class="h-5 w-5 text-[11px] bg-black/5 rounded-md
+                         disabled:opacity-40 disabled:cursor-not-allowed"
+                  type="button"
+                >
+                  +
+                </button>
+              </div>
+
+              <div class="text-[12px] font-bold text-[#354044]">
+                ${{ item.lineTotal | number:'1.2-2' }}
+              </div>
+            </div>
           </div>
-          
-          <div class="item-price">${{ item.unitPrice | number:'1.2-2' }}</div>
-          
-          <div class="item-quantity">
-            <button 
-              (click)="decreaseQuantity(item)" 
-              [disabled]="item.quantity <= 1"
-              class="qty-btn"
-            >
-              −
-            </button>
-            <span class="qty-display">{{ item.quantity }}</span>
-            <button 
-              (click)="increaseQuantity(item)" 
-              [disabled]="item.quantity >= item.product.stock"
-              class="qty-btn"
-            >
-              +
-            </button>
-          </div>
-        </div>
-        
-        <div class="item-total">
-          ${{ item.lineTotal | number:'1.2-2' }}
         </div>
       </div>
     }
   </div>
-  
+
   <!-- Totales -->
   @if (!cart().isEmpty) {
-    <div class="cart-totals">
-      <div class="total-row">
-        <span>Subtotal:</span>
-        <span>${{ cart().subtotal | number:'1.2-2' }}</span>
-      </div>
-      
-      @if (cart().discountPercent > 0) {
-        <div class="total-row discount">
-          <span>Descuento ({{ cart().discountPercent }}%):</span>
-          <span>-${{ cart().discountAmount | number:'1.2-2' }}</span>
+    <div class="px-4 py-3 border-t border-black/10">
+      <div class="text-[12px] space-y-1 text-[#354044]">
+        <div class="flex justify-between">
+          <span>Subtotal</span>
+          <span>${{ cart().subtotal | number:'1.2-2' }}</span>
         </div>
-      }
-      
-      <div class="total-row grand-total">
-        <span>Total:</span>
-        <span>${{ cart().total | number:'1.2-2' }}</span>
+
+        @if (cart().discountPercent > 0) {
+          <div class="flex justify-between text-[#354044]/80">
+            <span>Descuento ({{ cart().discountPercent }}%)</span>
+            <span>- ${{ cart().discountAmount | number:'1.2-2' }}</span>
+          </div>
+        }
+
+        <div class="flex justify-between font-bold pt-1 border-t border-black/10">
+          <span>Total</span>
+          <span>${{ cart().total | number:'1.2-2' }}</span>
+        </div>
       </div>
-      
-      <button 
-        [disabled]="cart().isEmpty" 
+
+      <button
         (click)="proceedToCheckout()"
-        class="checkout-btn"
+        class="w-full mt-3 py-2 text-[12px] font-semibold rounded-lg
+               bg-[#354044] text-white
+               hover:opacity-95 transition"
+        type="button"
       >
-        Proceder al pago (${{ cart().total | number:'1.2-2' }})
+        Proceder al pago
       </button>
     </div>
   }

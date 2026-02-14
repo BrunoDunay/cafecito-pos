@@ -1,13 +1,21 @@
-<div class="p-4 relative">
+<div class="p-4 relative min-h-full
+            bg-[url('/fondo.jpg')]
+            bg-cover bg-top bg-no-repeat bg-fixed">
+
   <div class="flex justify-between items-center mb-4">
-    <h1 class="text-2xl font-bold text-gray-800">Productos</h1>
-    
+    <h1 class="text-2xl font-bold text-[#354044]">Productos</h1>
+
     @if (isAdmin) {
       <button
         (click)="openCreateModal()"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+        class="px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition duration-200
+               text-white
+               border border-black/10
+               bg-[var(--action)]
+               shadow-[0_18px_40px_rgba(0,0,0,.18)]
+               hover:translate-y-[-1px] hover:shadow-[0_26px_60px_rgba(0,0,0,.22)]"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
         </svg>
         Nuevo producto
@@ -16,12 +24,12 @@
   </div>
 
   <div class="flex flex-wrap gap-2 mb-4">
-    <button 
-      (click)="filterByCategory(null)" 
-      [class]="!isCategoryMode 
-        ? 'bg-blue-600 text-white border-blue-600' 
-        : 'bg-white text-gray-700 border-gray-300'"
-      class="px-3 py-1.5 border rounded-full text-sm font-medium transition-colors"
+    <button
+      (click)="filterByCategory(null)"
+      [class]="!isCategoryMode
+        ? 'text-white border-black/10 bg-[var(--cat-active)] shadow-[0_12px_28px_rgba(0,0,0,.12),inset_0_1px_0_rgba(255,255,255,.35)]'
+        : 'text-[#354044]/80 border-black/10 bg-white/50'"
+      class="px-3 py-1.5 border rounded-full text-sm font-medium transition duration-200"
     >
       Todos
     </button>
@@ -30,9 +38,9 @@
       <button
         (click)="filterByCategory(category.categoryId)"
         [class]="selectedCategoryId === category.categoryId
-          ? 'bg-blue-600 text-white border-blue-600'
-          : 'bg-white text-gray-700 border-gray-300'"
-        class="px-3 py-1.5 border rounded-full text-sm font-medium transition-colors"
+          ? 'text-white border-black/10 bg-[var(--cat-active)] shadow-[0_12px_28px_rgba(0,0,0,.12),inset_0_1px_0_rgba(255,255,255,.35)]'
+          : 'text-[#354044]/80 border-black/10 bg-white/50'"
+        class="px-3 py-1.5 border rounded-full text-sm font-medium transition duration-200"
       >
         {{ category.name }}
       </button>
@@ -40,21 +48,27 @@
   </div>
 
   @if (isCategoryMode) {
-    <div class="bg-blue-50 border-l-4 border-blue-500 p-3 rounded mb-4">
-      <p class="text-sm text-gray-700">
-        Mostrando productos de: 
-        <strong class="font-semibold">{{ getCategoryName(selectedCategoryId!) }}</strong>
+    <div class="p-3 rounded mb-4
+                border border-black/10
+                bg-white/60
+                shadow-[0_14px_34px_rgba(0,0,0,.10)]">
+      <p class="text-sm text-[#354044]/80">
+        Mostrando productos de:
+        <strong class="font-semibold text-[#354044]">{{ getCategoryName(selectedCategoryId!) }}</strong>
       </p>
     </div>
   }
 
   @if (currentSearchTerm) {
-    <div class="bg-green-50 border-l-4 border-green-500 p-3 rounded mb-4">
-      <p class="text-sm text-gray-700">
-        Buscando: <strong class="font-semibold">"{{ currentSearchTerm }}"</strong> 
+    <div class="p-3 rounded mb-4
+                border border-black/10
+                bg-white/60
+                shadow-[0_14px_34px_rgba(0,0,0,.10)]">
+      <p class="text-sm text-[#354044]/80">
+        Buscando: <strong class="font-semibold text-[#354044]">"{{ currentSearchTerm }}"</strong>
         ({{ filteredProducts.length }} resultados)
         @if (!isCategoryMode) {
-          <span class="text-gray-500 text-xs ml-2">• Buscando en todos los productos</span>
+          <span class="text-[#354044]/60 text-xs ml-2">• Buscando en todos los productos</span>
         }
       </p>
     </div>
@@ -62,77 +76,104 @@
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
     @for (product of filteredProducts; track product.productId) {
-      <div 
-        class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 relative"
+      <div
+        class="relative p-4 rounded-[18px]
+               bg-[var(--card-bg)]
+               border border-black/10
+               shadow-[0_18px_45px_rgba(0,0,0,.12),inset_0_1px_0_rgba(255,255,255,.55)]
+               transition duration-200
+               hover:shadow-[0_26px_70px_rgba(0,0,0,.16),inset_0_1px_0_rgba(255,255,255,.65)]
+               hover:translate-y-[-1px]"
         [class.opacity-60]="!product.isActive"
-        [class.bg-gray-50]="!product.isActive"
       >
-        
         @if (!product.isActive) {
-          <div class="absolute top-2 left-2 bg-gray-600 text-white text-xs px-2 py-1 rounded-md flex items-center gap-1 z-10">
+          <div class="absolute top-2 left-2 z-10
+                      bg-[rgb(148,27,27)] text-white
+                      text-xs px-2 py-1 rounded-md flex items-center gap-1
+                      border border-white/30">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
             <span>Inactivo</span>
           </div>
         }
-        
+
         @if (isAdmin) {
           <div class="absolute top-2 right-2 flex gap-1 z-10">
             <button
-              (click)="openEditModal(product)"
-              class="p-1.5 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition-colors"
+              (click)="$event.stopPropagation(); openEditModal(product)"
+              class="p-1.5 rounded transition duration-200
+                     bg-[var(--edit)] border border-[var(--edit)]
+                     hover:bg-black/5"
               title="Editar producto"
+              type="button"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
               </svg>
             </button>
+
             <button
-              (click)="confirmDelete(product)"
-              class="p-1.5 bg-red-100 text-red-600 rounded hover:bg-red-200 transition-colors"
+              (click)="$event.stopPropagation(); confirmDelete(product)"
+              class="p-1.5 rounded transition duration-200
+                     bg-[var(--delete)] border border-[var(--delete)]
+                     hover:bg-black/5"
               title="Eliminar producto"
+              type="button"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </button>
           </div>
         }
-        
+
         @if (product.image) {
           <img
             [src]="product.image"
             alt="{{ product.name }}"
+            draggable="false"
             class="w-full h-40 object-cover rounded-md mb-3"
           />
         } @else {
-          <div class="w-full h-40 bg-gray-100 rounded-md flex items-center justify-center mb-3">
-            <span class="text-gray-400 text-sm">Sin imagen</span>
+          <div class="w-full h-40 rounded-md mb-3
+                      bg-black/5
+                      border border-black/10
+                      flex items-center justify-center">
+            <span class="text-[#354044]/60 text-sm">Sin imagen</span>
           </div>
         }
-        
-        <h3 class="font-semibold text-gray-800 text-sm mb-1 line-clamp-2 h-8">{{ product.name }}</h3>
-        <p class="text-xs text-gray-600 mb-1">
-          Categoría: <span class="font-medium">{{ product.category?.name || "Sin categoría" }}</span>
+
+        <h3 class="font-semibold text-[#354044] text-sm mb-1 line-clamp-2 h-8">
+          {{ product.name }}
+        </h3>
+
+        <p class="text-xs text-[#354044]/70 mb-1">
+          Categoría: <span class="font-medium text-[#354044]">{{ product.category?.name || "Sin categoría" }}</span>
         </p>
-        <p class="text-xs text-gray-600 mb-1">
-          Precio: <span class="font-medium text-green-600">${{ product.price | number:'1.2-2' }}</span>
+
+        <p class="text-xs text-[#354044]/70 mb-1">
+          Precio:
+          <span class="font-medium text-[var(--cat-active)]">
+            ${{ product.price | number:'1.2-2' }}
+          </span>
         </p>
-        <p class="text-xs text-gray-600 mb-3">
-          Stock: 
-          <span [class]="product.stock > 0 ? 'font-medium text-blue-600' : 'font-medium text-red-600'">
+
+        <p class="text-xs text-[#354044]/70 mb-3">
+          Stock:
+          <span class="font-medium text-[#354044]">
             {{ product.stock }}
           </span>
         </p>
-        
+
         <button
           [disabled]="product.stock === 0 || !product.isActive"
-          (click)="addToCart(product)"
+          (click)="$event.stopPropagation(); addToCart(product)"
           [class]="product.stock === 0 || !product.isActive
-            ? 'bg-gray-300 cursor-not-allowed'
-            : 'bg-blue-600 hover:bg-blue-700'"
-          class="w-full text-white py-2 rounded-md text-sm font-medium transition-colors"
+            ? 'bg-white/40 text-[#354044]/45 cursor-not-allowed border-black/10'
+            : 'bg-[var(--cat-active)] text-white border-black/10 hover:translate-y-[-1px]'"
+          class="w-full py-2 rounded-md text-sm font-medium transition duration-200
+                 border shadow-[0_16px_34px_rgba(0,0,0,.14),inset_0_1px_0_rgba(255,255,255,.10)]"
         >
           @if (!product.isActive) {
             Producto inactivo
@@ -147,41 +188,46 @@
   </div>
 
   @if (filteredProducts.length === 0) {
-    <div class="text-center py-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+    <div class="text-center py-12 rounded-lg
+                bg-white/60
+                border border-dashed border-black/10
+                shadow-[0_18px_40px_rgba(0,0,0,.12)]">
       @if (currentSearchTerm) {
-        <p class="text-gray-600">No se encontraron productos para "{{ currentSearchTerm }}"</p>
+        <p class="text-[#354044]/80">No se encontraron productos para "{{ currentSearchTerm }}"</p>
       } @else if (!currentSearchTerm && !isCategoryMode) {
-        <p class="text-gray-600">No hay productos para mostrar</p>
+        <p class="text-[#354044]/80">No hay productos para mostrar</p>
       } @else if (!currentSearchTerm && isCategoryMode) {
-        <p class="text-gray-600">No hay productos en esta categoría</p>
+        <p class="text-[#354044]/80">No hay productos en esta categoría</p>
       }
     </div>
   }
 
   @if (showPagination) {
-    <div class="flex justify-center items-center gap-4 mt-8 pt-6 border-t border-gray-200">
-      <button 
-        (click)="prevPage()" 
+    <div class="flex justify-center items-center gap-4 mt-8 pt-6 border-t border-black/10">
+      <button
+        (click)="prevPage()"
         [disabled]="page === 1"
         [class]="page === 1
-          ? 'bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed'
-          : 'bg-white text-blue-600 border-blue-600 hover:bg-blue-50'"
-        class="px-4 py-2 border rounded-lg text-sm font-medium transition-colors"
+          ? 'bg-transparent text-[#354044]/45 border-black/10 cursor-not-allowed'
+          : 'bg-[var(--cat-active)] text-white border-black/10 hover:translate-y-[-1px]'"
+        class="px-4 py-2 border rounded-lg text-sm font-medium transition duration-200
+               shadow-[0_16px_34px_rgba(0,0,0,.12)]"
       >
         Anterior
       </button>
-      
-      <span class="text-sm text-gray-600">
+
+      <span class="text-sm text-[#354044]/75">
         Página {{ page }} de {{ Math.ceil(total / limit) }}
       </span>
-      
-      <button 
-        (click)="nextPage()" 
+
+      <button
+        (click)="nextPage()"
         [disabled]="page * limit >= total"
         [class]="page * limit >= total
-          ? 'bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed'
-          : 'bg-white text-blue-600 border-blue-600 hover:bg-blue-50'"
-        class="px-4 py-2 border rounded-lg text-sm font-medium transition-colors"
+          ? 'bg-transparent text-[#354044]/45 border-black/10 cursor-not-allowed'
+          : 'bg-[var(--cat-active)] text-white border-black/10 hover:translate-y-[-1px]'"
+        class="px-4 py-2 border rounded-lg text-sm font-medium transition duration-200
+               shadow-[0_16px_34px_rgba(0,0,0,.12)]"
       >
         Siguiente
       </button>
@@ -189,29 +235,22 @@
   }
 
   @if (showCreateModal) {
-    <app-create-product
-      (close)="closeCreateModal()"
-      (productCreated)="onProductCreated($event)"
-    />
+    <app-create-product (close)="closeCreateModal()" (productCreated)="onProductCreated($event)" />
   }
 
   @if (showEditModal && selectedProduct) {
-    <app-edit-product
-      [product]="selectedProduct"
-      (close)="closeEditModal()"
-      (productUpdated)="onProductUpdated($event)"
-    />
+    <app-edit-product [product]="selectedProduct" (close)="closeEditModal()" (productUpdated)="onProductUpdated($event)" />
   }
 
   @if (showDeleteModal && productToDelete) {
-  <app-confirm-modal
-    title="Eliminar producto"
-    [message]="'¿Estás seguro de eliminar el producto &quot;' + productToDelete.name + '&quot;? Esta acción no se puede deshacer.'"
-    confirmText="Eliminar"
-    cancelText="Cancelar"
-    confirmClass="bg-red-600 hover:bg-red-700"
-    (confirm)="onDeleteConfirmed()"
-    (cancel)="closeDeleteModal()"
-  />
-}
+    <app-confirm-modal
+      title="Eliminar producto"
+      [message]="'¿Estás seguro de eliminar el producto &quot;' + productToDelete.name + '&quot;? Esta acción no se puede deshacer.'"
+      confirmText="Eliminar"
+      cancelText="Cancelar"
+      confirmClass="bg-red-600 hover:bg-red-700"
+      (confirm)="onDeleteConfirmed()"
+      (cancel)="closeDeleteModal()"
+    />
+  }
 </div>

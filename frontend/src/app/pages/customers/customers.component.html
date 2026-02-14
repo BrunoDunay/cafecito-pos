@@ -1,50 +1,42 @@
-<!-- customers.component.html - Tabla con textos 4% más grandes -->
-<div class="min-h-screen bg-gray-100 p-4">
+<div class="min-h-screen bg-[var(--main-bg)] p-4">
   <div class="max-w-full mx-auto">
-    <!-- HEADER (se mantiene igual) -->
     <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-800">Gestión de Clientes</h1>
-        <p class="text-gray-500 text-xs">
-          Administra y consulta tus clientes registrados
-        </p>
+        <h1 class="text-2xl font-bold text-[#354044]">Clientes</h1>
+        <p class="text-[#354044]/60 text-xs">Administra y consulta tus clientes registrados</p>
       </div>
 
       <button
         (click)="openModal()"
-        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-md text-sm transition-colors"
+        class="bg-[var(--action)] hover:opacity-95 text-white px-4 py-2 rounded-lg flex items-center gap-2
+               shadow-[0_14px_26px_rgba(0,0,0,.16)] text-sm transition duration-200 hover:translate-y-[-1px]"
       >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
         Nuevo Cliente
       </button>
     </div>
 
-    <!-- LOADING (se mantiene igual) -->
     @if (loading()) {
       <div class="text-center py-10">
-        <div class="animate-spin rounded-full h-10 w-10 border-4 border-blue-600 border-t-transparent mx-auto"></div>
-        <p class="mt-3 text-gray-600 text-sm">Cargando clientes...</p>
+        <div class="animate-spin rounded-full h-10 w-10 border-4 border-[#354044] border-t-transparent mx-auto"></div>
+        <p class="mt-3 text-[#354044]/70 text-sm">Cargando clientes...</p>
       </div>
     }
 
-    <!-- ERROR (se mantiene igual) -->
     @if (error()) {
-      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded-lg mb-4 text-sm">
+      <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg mb-4 text-sm">
         {{ error() }}
       </div>
     }
 
-    <!-- TABLA DE CLIENTES - TEXTOS 4% MÁS GRANDES -->
     @if (!loading() && customers().length > 0) {
       <div class="overflow-x-auto -mx-5 px-4">
-        <div class="bg-white shadow-sm rounded-lg border border-gray-200 min-w-max">
-          <!-- Tabla con texto aumentado ~4% -->
-          <table class="min-w-full text-[11.5px]"> <!-- Aumentado de 11px a 11.5px (~4.5%) -->
-            <thead class="bg-gray-50 text-gray-600 uppercase">
+        <div class="bg-[var(--card-bg)] shadow-[0_18px_45px_rgba(0,0,0,.10)] rounded-lg border border-black/10 min-w-max">
+          <table class="min-w-full text-[11.5px]">
+            <thead class="bg-[var(--action)] text-white uppercase">
               <tr>
-                <!-- Encabezados -->
                 <th class="px-3.5 py-2.5 text-left whitespace-nowrap">Nombre</th>
                 <th class="px-3.5 py-2.5 text-left whitespace-nowrap">Email</th>
                 <th class="px-3.5 py-2.5 text-left whitespace-nowrap">Teléfono</th>
@@ -55,65 +47,60 @@
               </tr>
             </thead>
 
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y divide-black/10">
               @for (customer of customers(); track customer.customerId) {
-                <tr class="hover:bg-gray-50 transition-colors">
-                  <!-- Nombre - texto aumentado -->
+                <tr class="hover:bg-black/5 transition-colors">
                   <td class="px-3.5 py-2.5 whitespace-nowrap">
                     <div class="flex items-center gap-1.5">
-                      <span class="font-medium text-gray-800 text-xs"> <!-- Mantenemos text-xs (~12px) -->
+                      <span class="font-semibold text-[#354044] text-xs">
                         {{ customer.name }}
                       </span>
                     </div>
                   </td>
 
-                  <!-- Email - texto aumentado -->
-                  <td class="px-3.5 py-2.5 text-gray-600 whitespace-nowrap">
-                    <div class="truncate max-w-[150px] text-[11.5px]"> <!-- Aumentado de 11px a 11.5px -->
+                  <td class="px-3.5 py-2.5 text-[#354044]/70 whitespace-nowrap">
+                    <div class="truncate max-w-[150px] text-[11.5px]">
                       {{ customer.email }}
                     </div>
                   </td>
 
-                  <!-- Teléfono - texto aumentado -->
-                  <td class="px-3.5 py-2.5 text-gray-600 whitespace-nowrap text-[11.5px]"> <!-- Aumentado de 11px a 11.5px -->
+                  <td class="px-3.5 py-2.5 text-[#354044]/70 whitespace-nowrap text-[11.5px]">
                     {{ customer.phone || "No registrado" }}
                   </td>
 
-                  <!-- Compras - badge con texto aumentado -->
                   <td class="px-3.5 py-2.5 whitespace-nowrap">
-                    <span [class]="customer.purchasesCount > 0
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-gray-100 text-gray-600'"
-                      class="px-1.5 py-0.5 text-[10.5px] font-semibold rounded-full" 
+                    <span
+                      [class]="customer.purchasesCount > 0
+                        ? 'bg-[var(--cat-active)]/20 text-[#354044]'
+                        : 'bg-black/5 text-[#354044]/70'"
+                      class="px-1.5 py-0.5 text-[10.5px] font-semibold rounded-full"
                     >
                       {{ customer.purchasesCount }} compras
                     </span>
                   </td>
 
-                  <!-- Estado - botón con texto aumentado -->
                   <td class="px-3.5 py-2.5 whitespace-nowrap">
                     <button
                       (click)="toggleCustomerStatus(customer)"
                       [class]="customer.isActive
-                        ? 'bg-green-100 hover:bg-green-200 text-green-700'
-                        : 'bg-red-100 hover:bg-red-200 text-red-700'"
-                      class="px-1.5 py-0.5 text-[10.5px] font-semibold rounded-full transition-colors" 
+                        ? 'bg-[var(--cat-active)] text-white hover:opacity-95'
+                        : 'bg-[var(--delete)] text-white hover:opacity-95'"
+                      class="px-1.5 py-0.5 text-[10.5px] font-semibold rounded-full transition duration-200"
                     >
                       {{ customer.isActive ? "Activo" : "Inactivo" }}
                     </button>
                   </td>
 
-                  <!-- Registro - texto aumentado -->
-                  <td class="px-3.5 py-2.5 text-gray-500 whitespace-nowrap text-[11.5px]"> <!-- Aumentado de 11px a 11.5px -->
+                  <td class="px-3.5 py-2.5 text-[#354044]/60 whitespace-nowrap text-[11.5px]">
                     {{ formatDate(customer.createdAt) }}
                   </td>
 
-                  <!-- Acciones - botón con texto aumentado -->
                   <td class="px-3.5 py-2.5 whitespace-nowrap">
                     <button
                       (click)="deleteCustomer(customer)"
                       [disabled]="customer.purchasesCount > 0"
-                      class="text-red-600 hover:bg-red-50 px-1.5 py-0.5 rounded text-[11.5px] font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-colors" 
+                      class="text-[var(--delete)] hover:bg-[var(--delete)]/10 px-1.5 py-0.5 rounded text-[11.5px] font-semibold
+                             disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                     >
                       Eliminar
                     </button>
@@ -125,9 +112,8 @@
         </div>
       </div>
 
-      <!-- PAGINACIÓN (se mantiene igual) -->
-      <div class="mt-4 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-gray-600">
-        <div class="text-sm">
+      <div class="mt-4 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-[#354044]/70">
+        <div class="text-sm text-[#354044]/80">
           Mostrando {{ customers().length }} de {{ totalItems() }} clientes
         </div>
 
@@ -135,19 +121,26 @@
           <button
             (click)="onPageChange(currentPage() - 1)"
             [disabled]="!hasPreviousPage"
-            class="px-3 py-1.5 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 disabled:opacity-50 text-sm transition-colors"
+            class="px-3 py-1.5 border border-black/10 rounded-lg
+                   bg-transparent text-[#354044]/70
+                   disabled:opacity-40 disabled:cursor-not-allowed
+                   hover:bg-black/5 text-sm transition-colors"
           >
             Anterior
           </button>
 
-          <span class="px-2 py-1.5 text-sm">
+          <span class="px-2 py-1.5 text-sm text-[#354044]/80">
             Página {{ currentPage() }} de {{ totalPages }}
           </span>
 
           <button
             (click)="onPageChange(currentPage() + 1)"
             [disabled]="!hasNextPage"
-            class="px-3 py-1.5 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 disabled:opacity-50 text-sm transition-colors"
+            class="px-3 py-1.5 border border-black/10 rounded-lg
+                   bg-[var(--cat-active)] text-white
+                   disabled:bg-transparent disabled:text-[#354044]/50
+                   disabled:opacity-70 disabled:cursor-not-allowed
+                   hover:opacity-95 text-sm transition-colors"
           >
             Siguiente
           </button>
@@ -155,14 +148,15 @@
       </div>
     }
 
-    <!-- ESTADO VACÍO (se mantiene igual) -->
     @if (!loading() && customers().length === 0) {
-      <div class="text-center py-12 bg-white rounded-lg border border-gray-200">
-        <svg class="mx-auto h-12 w-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="text-center py-12 bg-[var(--card-bg)] rounded-lg border border-black/10 shadow-[0_18px_45px_rgba(0,0,0,.10)]">
+        <svg class="mx-auto h-12 w-12 text-[#354044]/25" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-2.5a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/>
         </svg>
-        <h3 class="mt-3 text-lg font-semibold text-gray-800">No hay clientes</h3>
-        <p class="mt-1 text-gray-500 text-sm">
+
+        <h3 class="mt-3 text-lg font-semibold text-[#354044]">No hay clientes</h3>
+
+        <p class="mt-1 text-[#354044]/60 text-sm">
           {{
             currentSearchTerm
               ? "No se encontraron clientes con la búsqueda actual."
@@ -172,21 +166,23 @@
       </div>
     }
 
-    <!-- MODAL PARA CREAR CLIENTE (se mantiene igual) -->
     @if (showModal()) {
       <div class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-start justify-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-5 mt-16">
+        <div class="bg-[var(--card-bg)] rounded-[22px] shadow-[0_20px_50px_rgba(0,0,0,.15)] w-full max-w-md p-5 mt-16 border border-black/10">
           <div class="flex justify-between items-center mb-5">
-            <h3 class="text-lg font-semibold text-gray-800">Nuevo Cliente</h3>
-            <button (click)="closeModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+            <h3 class="text-lg font-semibold text-[#354044]">Nuevo Cliente</h3>
+            <button
+              (click)="closeModal()"
+              class="p-1 rounded-lg border border-black/10 text-[#354044]/70 hover:bg-black/5 hover:text-[#354044] transition-colors"
+              type="button"
+            >
               ✕
             </button>
           </div>
 
           <form [formGroup]="customerForm" (ngSubmit)="createCustomer()" class="space-y-3">
-            <!-- ERRORES DE VALIDACIÓN -->
             @if (customerForm.get("name")?.touched && customerForm.get("name")?.errors) {
-              <div class="text-red-500 text-xs">
+              <div class="text-[var(--delete)] text-xs">
                 @if (customerForm.get("name")?.hasError("required")) {
                   Nombre es requerido
                 } @else if (customerForm.get("name")?.hasError("minlength")) {
@@ -198,7 +194,7 @@
             }
 
             @if (customerForm.get("email")?.touched && customerForm.get("email")?.errors) {
-              <div class="text-red-500 text-xs">
+              <div class="text-[var(--delete)] text-xs">
                 @if (customerForm.get("email")?.hasError("required")) {
                   Email es requerido
                 } @else if (customerForm.get("email")?.hasError("email")) {
@@ -210,31 +206,49 @@
             }
 
             <div>
-              <label class="block text-xs font-medium text-gray-700 mb-1">Nombre *</label>
+              <label class="block text-xs font-medium text-[#354044] mb-1">Nombre *</label>
               <input
                 type="text"
                 formControlName="name"
-                class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                class="w-full p-2.5 rounded-lg bg-white
+                       border border-black/10
+                       text-[#354044] placeholder:text-[#354044]/45
+                       focus:outline-none
+                       focus:ring-2 focus:ring-[var(--cat-active)]/30
+                       focus:border-[var(--cat-active)]
+                       text-sm"
                 placeholder="Nombre completo"
               />
             </div>
 
             <div>
-              <label class="block text-xs font-medium text-gray-700 mb-1">Email *</label>
+              <label class="block text-xs font-medium text-[#354044] mb-1">Email *</label>
               <input
                 type="email"
                 formControlName="email"
-                class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                class="w-full p-2.5 rounded-lg bg-white
+                       border border-black/10
+                       text-[#354044] placeholder:text-[#354044]/45
+                       focus:outline-none
+                       focus:ring-2 focus:ring-[var(--cat-active)]/30
+                       focus:border-[var(--cat-active)]
+                       text-sm"
                 placeholder="correo@ejemplo.com"
               />
             </div>
 
             <div>
-              <label class="block text-xs font-medium text-gray-700 mb-1">Teléfono</label>
+              <label class="block text-xs font-medium text-[#354044] mb-1">Teléfono</label>
               <input
                 type="tel"
                 formControlName="phone"
-                class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                class="w-full p-2.5 rounded-lg bg-white
+                       border border-black/10
+                       text-[#354044] placeholder:text-[#354044]/45
+                       focus:outline-none
+                       focus:ring-2 focus:ring-[var(--cat-active)]/30
+                       focus:border-[var(--cat-active)]
+                       text-sm"
                 placeholder="(555) 123-4567"
               />
             </div>
@@ -243,14 +257,25 @@
               <button
                 type="button"
                 (click)="closeModal()"
-                class="px-3 py-1.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 text-sm transition-colors"
+                class="px-3 py-1.5 rounded-lg
+                       border border-black/10
+                       text-[#354044]
+                       bg-white/60 hover:bg-white
+                       text-sm transition-colors"
               >
                 Cancelar
               </button>
+
               <button
                 type="submit"
                 [disabled]="customerForm.invalid"
-                class="px-4 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm transition-colors"
+                class="px-4 py-1.5 rounded-lg
+                       bg-[var(--action)] text-white
+                       border border-black/10
+                       shadow-[0_14px_26px_rgba(0,0,0,.16)]
+                       hover:translate-y-[-1px]
+                       disabled:bg-black/20 disabled:text-white/70 disabled:cursor-not-allowed
+                       text-sm transition duration-200"
               >
                 Crear Cliente
               </button>
@@ -260,15 +285,16 @@
       </div>
     }
   </div>
+
   @if (showDeleteModal() && customerToDelete()) {
-  <app-confirm-modal
-    title="Eliminar cliente"
-    [message]="'¿Estás seguro de eliminar al cliente &quot;' + customerToDelete()!.name + '&quot;? Esta acción no se puede deshacer.'"
-    confirmText="Eliminar"
-    cancelText="Cancelar"
-    confirmClass="bg-red-600 hover:bg-red-700"
-    (confirm)="onDeleteConfirmed()"
-    (cancel)="closeDeleteModal()"
-  />
-}
+    <app-confirm-modal
+      title="Eliminar cliente"
+      [message]="'¿Estás seguro de eliminar al cliente &quot;' + customerToDelete()!.name + '&quot;? Esta acción no se puede deshacer.'"
+      confirmText="Eliminar"
+      cancelText="Cancelar"
+      confirmClass="bg-red-600 hover:bg-red-700"
+      (confirm)="onDeleteConfirmed()"
+      (cancel)="closeDeleteModal()"
+    />
+  }
 </div>

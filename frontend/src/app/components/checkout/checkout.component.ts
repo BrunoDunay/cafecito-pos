@@ -32,7 +32,6 @@ export class CheckoutComponent implements OnInit {
   successMessage = signal('La venta se ha procesado correctamente');
   saleDetails = signal('');
   
-  // Computed
   changeAmount = computed(() => {
     if (this.paymentMethod() === 'cash') {
       const cash = this.cashAmount();
@@ -46,9 +45,9 @@ export class CheckoutComponent implements OnInit {
   
   // Métodos de pago
   paymentMethods = [
-    { id: 'cash', name: '💵 Efectivo', icon: '💰' },
-    { id: 'card', name: '💳 Tarjeta', icon: '💳' },
-    { id: 'transfer', name: '🏦 Transferencia', icon: '🏦' }
+    { id: 'cash', name: '💵 Efectivo' },
+    { id: 'card', name: '💳 Tarjeta' },
+    { id: 'transfer', name: '🏦 Transferencia' }
   ];
   
   ngOnInit(): void {
@@ -113,7 +112,7 @@ export class CheckoutComponent implements OnInit {
       const sale = await lastValueFrom(this.saleService.createSale(payload));
       
       // Mostrar modal de éxito
-      this.saleDetails.set(`ID: ${sale.saleId.substring(0, 8)}...\nTotal: ${this.formatCurrency(sale.total)}`);
+      this.saleDetails.set(`ID: ${sale.saleId.substring(0, 8)}\nTotal: ${this.formatCurrency(sale.total)}`);
       this.showSuccessModal.set(true);
       
       // Limpiar carrito
@@ -123,7 +122,7 @@ export class CheckoutComponent implements OnInit {
       setTimeout(() => {
         this.showSuccessModal.set(false);
         this.router.navigate(['/products']);
-      }, 1500); 
+      }, 1300); 
       
     } catch (error: any) {
       console.error('Error procesando venta:', error);

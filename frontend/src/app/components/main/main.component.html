@@ -1,20 +1,51 @@
-<div class="layout">
-  <aside class="sidebar">
-    <h2 class="logo">Cafecito Feliz</h2>
-    <nav>
-      <a routerLink="/products" routerLinkActive="active">Productos</a>
-      <a routerLink="/customers" routerLinkActive="active">Clientes</a>
-      <a routerLink="/sales" routerLinkActive="active">Ventas</a>
-      <a routerLink="/admin/users" routerLinkActive="active">Usuarios</a>
+<div
+  class="min-h-screen bg-[var(--action)]"
+>
+  <aside
+    class="fixed left-0 top-0 bottom-0 z-30 w-[240px] p-6 bg-[var(--menu-bg)] border-r border-black/10 shadow-[0_24px_70px_rgba(0,0,0,.18)] backdrop-blur-[0px]"
+  >
+    <h2 class="text-white font-bold tracking-wide text-lg mb-6">
+      Cafecito Feliz
+    </h2>
+
+    <nav class="flex flex-col gap-2">
+      <a
+        routerLink="/products"
+        routerLinkActive="bg-white/70 text-[var(--action)] border-black/10 shadow-[0_10px_24px_rgba(0,0,0,.10)]"
+        class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[#354044]"
+        >Productos</a
+      >
+
+      <a
+        routerLink="/customers"
+        routerLinkActive="bg-white/70 text-[var(--action)] border-black/10 shadow-[0_10px_24px_rgba(0,0,0,.10)]"
+        class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[#354044]"
+        >Clientes</a
+      >
+
+      <a
+        routerLink="/sales"
+        routerLinkActive="bg-white/70 text-[var(--action)] border-black/10 shadow-[0_10px_24px_rgba(0,0,0,.10)]"
+        class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[#354044]"
+        >Ventas</a
+      >
+
+      <a
+        *ngIf="isAdmin"
+        routerLink="/admin/users"
+        routerLinkActive="bg-white/70 text-[var(--action)] border-black/10 shadow-[0_10px_24px_rgba(0,0,0,.10)]"
+        class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[#354044]"
+        >Usuarios</a
+      >
     </nav>
   </aside>
 
-  <div class="content">
+  <div class="min-h-screen ml-[240px] mr-[320px] flex flex-col bg-[var(--main-bg)]">
     <app-navbar></app-navbar>
-    <main class="page">
+    <main class="flex-1 overflow-y-auto w-full p-0">
       <router-outlet></router-outlet>
     </main>
   </div>
 
-  <app-cart></app-cart>
+  <app-cart class="fixed right-0 top-0 bottom-0 z-40"></app-cart>
 </div>

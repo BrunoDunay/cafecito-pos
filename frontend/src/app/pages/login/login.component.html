@@ -1,53 +1,83 @@
-<div class="container">
-<form class="form" (ngSubmit)="login()">
-  <p id="heading">Cafecito Feliz POS</p>
+<div
+  class="min-h-screen w-full flex items-center justify-center
+         bg-[var(--main-bg)]"
+>
+  <form
+    (ngSubmit)="login()"
+    class="w-[300px] max-w-[92vw] min-h-[420px]
+           flex flex-col gap-4 p-8 rounded-[22px]
+           bg-[var(--card-bg)]
+           border border-black/10
+           shadow-[0_20px_50px_rgba(0,0,0,.15)]
+           transition ease-in-out duration-200
+           hover:scale-[1.02]"
+  >
+    <p class="text-center mt-5 mb-4 text-[1.15em] tracking-[.3px] text-[#354044] font-semibold">
+      Cafecito Feliz POS
+    </p>
 
-  <div class="field">
-    <svg
-      class="input-icon"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 16 16"
+    <!-- Email -->
+    <div
+      class="flex items-center gap-2 rounded-[18px] px-4 py-3
+             bg-white
+             border border-black/10
+             shadow-[inset_0_2px_6px_rgba(0,0,0,.05)]
+             transition duration-200
+             focus-within:border-[var(--cat-active)]
+             focus-within:ring-2 focus-within:ring-[var(--cat-active)]/30"
     >
-      <path
-        d="M13.106 7.222c0-2.967-2.249-5.032-5.482-5.032-3.35 0-5.646 2.318-5.646 5.702 0 3.493 2.235 5.708 5.762 5.708.862 0 1.689-.123 2.304-.335v-.862c-.43.199-1.354.328-2.29.328-2.926 0-4.813-1.88-4.813-4.798 0-2.844 1.921-4.881 4.594-4.881 2.735 0 4.608 1.688 4.608 4.156z"
+      <svg class="h-[1.2em] w-[1.2em] fill-[#354044]/70" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+        <path d="M13.106 7.222c0-2.967-2.249-5.032-5.482-5.032-3.35 0-5.646 2.318-5.646 5.702 0 3.493 2.235 5.708 5.762 5.708.862 0 1.689-.123 2.304-.335v-.862c-.43.199-1.354.328-2.29.328-2.926 0-4.813-1.88-4.813-4.798 0-2.844 1.921-4.881 4.594-4.881 2.735 0 4.608 1.688 4.608 4.156z"/>
+      </svg>
+
+      <input
+        type="email"
+        placeholder="Correo electrónico"
+        name="email"
+        [(ngModel)]="email"
+        required
+        class="w-full bg-transparent outline-none text-[#354044] text-sm placeholder:text-[#354044]/50"
       />
-    </svg>
+    </div>
 
-    <input
-      class="input-field"
-      type="email"
-      placeholder="Correo electrónico"
-      name="email"
-      [(ngModel)]="email"
-      required
-    />
-  </div>
-
-  <div class="field">
-    <svg
-      class="input-icon"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 16 16"
+    <!-- Password -->
+    <div
+      class="flex items-center gap-2 rounded-[18px] px-4 py-3
+             bg-white
+             border border-black/10
+             shadow-[inset_0_2px_6px_rgba(0,0,0,.05)]
+             transition duration-200
+             focus-within:border-[var(--cat-active)]
+             focus-within:ring-2 focus-within:ring-[var(--cat-active)]/30"
     >
-      <path
-        d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"
+      <svg class="h-[1.2em] w-[1.2em] fill-[#354044]/70" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+      </svg>
+
+      <input
+        type="password"
+        placeholder="Contraseña"
+        name="password"
+        [(ngModel)]="password"
+        required
+        class="w-full bg-transparent outline-none text-[#354044] text-sm placeholder:text-[#354044]/50"
       />
-    </svg>
+    </div>
 
-    <input
-      class="input-field"
-      type="password"
-      placeholder="Contraseña"
-      name="password"
-      [(ngModel)]="password"
-      required
-    />
-  </div>
-
-  <div class="btn">
-    <button class="button1" type="submit">
-      Iniciar sesión
-    </button>
-  </div>
-</form>
+    <!-- Botón -->
+    <div class="flex justify-center mt-6">
+      <button
+        type="submit"
+        class="px-6 py-3 rounded-[12px]
+               bg-[var(--action)]
+               text-white
+               shadow-[0_14px_26px_rgba(0,0,0,.18)]
+               transition duration-300
+               hover:translate-y-[-1px]
+               hover:shadow-[0_18px_30px_rgba(0,0,0,.25)]"
+      >
+        Iniciar sesión
+      </button>
+    </div>
+  </form>
 </div>

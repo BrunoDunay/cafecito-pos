@@ -9,3 +9,14 @@
 @tailwind components;
 @tailwind utilities;
 
+:root{
+  --menu-bg:#354044;        
+  --main-bg:#f5f5f5;        
+  --card-bg:#f2f1ed;       
+  --cat-active:#87b26d;    
+  --edit:#00bda4;          
+  --delete:#e52b08;       
+  --action:#354044;         
+}
+
+

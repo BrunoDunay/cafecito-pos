@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 import { UserService, User } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
+import { SearchService } from '../../core/services/search.service';
 import { CreateUserComponent } from './create-user/create-user.component';
 import { EditUserComponent } from './edit-user/edit-user.component';
 import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
@@ -18,7 +20,7 @@ import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-mo
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent implements OnInit, OnDestroy {
   users: User[] = [];
   filteredUsers: User[] = [];
   
@@ -31,20 +33,35 @@ export class UsersComponent implements OnInit {
   showDeleteModal = false;
   userToDelete: User | null = null;
 
+  private searchSubscription!: Subscription;
+
   constructor(
     private userService: UserService,
-    public authService: AuthService
+    public authService: AuthService,
+    private searchService: SearchService
   ) {}
 
   ngOnInit(): void {
     this.loadUsers();
+
+    // Suscribirse al servicio de búsqueda global
+    this.searchSubscription = this.searchService.search$.subscribe((term) => {
+      this.searchTerm = term;
+      this.filterUsers();
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.searchSubscription) {
+      this.searchSubscription.unsubscribe();
+    }
   }
 
   loadUsers(): void {
     this.userService.getAll().subscribe({
       next: (users) => {
         this.users = users;
-        this.filteredUsers = [...users];
+        this.filterUsers();
       }
     });
   }
@@ -67,7 +84,7 @@ export class UsersComponent implements OnInit {
     this.selectedUser = null;
   }
 
-    confirmDelete(user: User): void {
+  confirmDelete(user: User): void {
     this.userToDelete = user;
     this.showDeleteModal = true;
   }
@@ -119,11 +136,7 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  onSearch(event: Event): void {
-    const term = (event.target as HTMLInputElement).value.toLowerCase();
-    this.searchTerm = term;
-    this.filterUsers();
-  }
+  // Eliminamos el método onSearch ya que no lo necesitamos más
 
   private filterUsers(): void {
     if (!this.searchTerm) {
@@ -141,8 +154,8 @@ export class UsersComponent implements OnInit {
 
   getRoleBadgeColor(role: string): string {
     return role === 'admin' 
-      ? 'bg-purple-100 text-purple-800' 
-      : 'bg-blue-100 text-blue-800';
+      ? 'bg-purple-400 text-white' 
+      : 'bg-blue-500 text-white';
   }
 
   get isAdmin(): boolean {
