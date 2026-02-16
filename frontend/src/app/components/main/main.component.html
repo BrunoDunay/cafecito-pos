@@ -1,12 +1,14 @@
-<div
-  class="min-h-screen bg-[var(--action)]"
->
+<div class="min-h-screen bg-white">
   <aside
     class="fixed left-0 top-0 bottom-0 z-30 w-[240px] p-6 bg-[var(--menu-bg)] border-r border-black/10 shadow-[0_24px_70px_rgba(0,0,0,.18)] backdrop-blur-[0px]"
   >
-    <h2 class="text-white font-bold tracking-wide text-lg mb-6">
-      Cafecito Feliz
-    </h2>
+    <div class="mb-4 flex items-center justify-center">
+      <img
+        src="/logo.png"
+        alt="Cafecito Feliz"
+        class="h-auto w-auto object-contain"
+      />
+    </div>
 
     <nav class="flex flex-col gap-2">
       <a
@@ -40,7 +42,9 @@
     </nav>
   </aside>
 
-  <div class="min-h-screen ml-[240px] mr-[320px] flex flex-col bg-[var(--main-bg)]">
+  <div
+    class="min-h-screen ml-[240px] mr-[320px] flex flex-col bg-[var(--main-bg)]"
+  >
     <app-navbar></app-navbar>
     <main class="flex-1 overflow-y-auto w-full p-0">
       <router-outlet></router-outlet>

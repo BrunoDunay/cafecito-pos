@@ -15,7 +15,7 @@ export class NavbarComponent {
   constructor(
     private authService: AuthService,
     private searchService: SearchService,
-    private router: Router
+    private router: Router,
   ) {}
 
   onSearch(event: Event) {
@@ -28,7 +28,11 @@ export class NavbarComponent {
     this.router.navigate(['/login']);
   }
 
-  get role() {
-    return this.authService.getRole();
+  get role(): string {
+    const role = this.authService.getRole();
+
+    if (!role) return 'Guest';
+
+    return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
   }
 }
