@@ -1,260 +1,231 @@
-☕ Cafecito Feliz POS — MVP
+# ☕ Cafecito Feliz POS — MVP
 
 Sistema de Punto de Venta (POS) desarrollado como parte del proyecto Cafecito Feliz, enfocado en la implementación de un MVP funcional siguiendo un contrato de API definido y reglas claras de negocio.
 
+## ✨ Características
+
 El sistema permite:
+- 📦 Gestión de productos (CRUD)
+- 👥 Registro y búsqueda de clientes
+- 💰 Registro de ventas con cálculo automático de descuentos
+- 📉 Control de stock
+- 🔐 Autenticación y autorización por roles (Admin / Vendedor)
 
-Gestión de productos (CRUD)
-
-Registro y búsqueda de clientes
-
-Registro de ventas con cálculo automático de descuentos
-
-Control de stock
-
-Autenticación y autorización por roles (Admin / Vendedor)
-
-🧱 Arquitectura
+## 🧱 Arquitectura
 
 El proyecto está dividido en:
 
 cafecito-pos/
 │
-├── backend/     → API REST
-└── frontend/    → Aplicación Angular (SPA)
+├── backend/ → API REST (Node.js + Express)
+└── frontend/ → Aplicación Angular (SPA)
 
 
-Backend: Node.js + Express
+- **Backend:** Node.js + Express + MongoDB
+- **Frontend:** Angular 17+
+- **Autenticación:** Bearer Token (JWT)
 
-Base de datos: MongoDB
+## 📋 Requisitos previos
 
-Frontend: Angular
+- Node.js 18+
+- npm 9+
+- MongoDB (local o Atlas)
 
-Autenticación: Bearer Token
+## 🔧 Puertos utilizados
 
-📋 Requisitos
+| Servicio | URL |
+|----------|-----|
+| Backend | http://localhost:3001 |
+| Frontend | http://localhost:4200 |
 
-Node.js 18+
+## ⚙️ Instalación
 
-npm 9+
+### 1️⃣ Clonar repositorio
 
-Base de datos configurada (según tecnología elegida)
-
-Puertos utilizados:
-
-Backend: http://localhost:3001
-
-Frontend: http://localhost:4200
- (Angular default)
-
-⚙️ Instalación
-1️⃣ Clonar repositorio
-git clone <https://github.com/BrunoDunay/cafecito-pos>
+```bash
+git clone https://github.com/BrunoDunay/cafecito-pos
 cd cafecito-pos
 
 2️⃣ Backend
+
+bash
 cd backend
 npm install
 npm run dev
 
-
-El servidor iniciará en:
-
-http://localhost:3001
+El servidor iniciará en: http://localhost:3001
 
 3️⃣ Frontend
+
+bash
 cd frontend
 npm install
 ng serve -o
-
-
-La aplicación abrirá automáticamente en:
-
-http://localhost:4200
+La aplicación abrirá automáticamente en: http://localhost:4200
 
 🔐 Variables de entorno
+El backend utiliza un archivo .env con las siguientes variables:
 
-El backend utiliza un archivo .env con variables como:
-
+env
 PORT=3001
-DB_CONNECTION_STRING=<tu_conexion>
-JWT_SECRET=<tu_secret>
-
-
-⚠️ El archivo .env no debe subirse al repositorio.
+DB_CONNECTION_STRING=mongodb://localhost:27017/cafecito
+JWT_SECRET=tu_secreto_super_seguro
+JWT_REFRESH_SECRET=otro_secreto_para_refresh
+FRONT_APP_URL=http://localhost:4200
+⚠️ El archivo .env no debe subirse al repositorio (está en .gitignore)
 
 🎯 Alcance del MVP
-Incluye
+✅ Incluye
 Ventas
+Listado y búsqueda de productos
 
--Listado y búsqueda de productos
+Carrito en frontend
 
--Carrito en frontend
+Cálculo de subtotal y total
 
--Cálculo de subtotal y total
+Aplicación automática de descuento
 
--Aplicación automática de descuento
+Generación de ticket
 
--Generación de ticket
+Actualización de stock
 
--Actualización de stock
-
--Incremento de purchasesCount
+Incremento de purchasesCount
 
 Clientes
+Registro de cliente
 
--Registro de cliente
+Búsqueda con paginación
 
--Búsqueda con paginación
-
--Identificación para descuento automático
+Identificación para descuento automático
 
 Productos
+Crear producto (Admin)
 
--Crear producto (Admin)
+Editar producto (Admin)
 
--Editar producto (Admin)
-
--Eliminar producto (Admin)
+Eliminar producto (Admin)
 
 Roles
+Admin: gestión completa de productos
 
--Admin: gestión de productos
+Vendedor: ventas y clientes
 
--Vendedor: ventas y clientes
-
--Público: solo consulta de productos
+Público: solo consulta de productos
 
 💰 Regla de descuentos
+El descuento se calcula exclusivamente en el backend según el histórico de compras del cliente:
 
-El descuento se calcula exclusivamente en el backend según purchasesCount:
-
-Compras	Descuento
+Compras realizadas	Descuento
 0	0%
 1 – 3	5%
 4 – 7	10%
 8+	15%
-
 El frontend solo muestra el resultado calculado por la API.
 
 📡 API
-
-Base URL:
-
+Base URL
+text
 /api
+Convenciones
+API: snake_case (ej: product_id, is_active)
 
+Frontend: camelCase (transformado automáticamente por interceptores)
 
-Convenciones:
-
-snake_case en API
-
-camelCase en frontend
-
-Endpoints principales:
-
+Endpoints principales
 Productos
-
-GET /api/products
-
-POST /api/products (Admin)
-
-PUT /api/products/:id (Admin)
-
-DELETE /api/products/:id (Admin)
-
+Método	Endpoint	Rol	Descripción
+GET	/api/products	Público	Listar productos (con filtros)
+GET	/api/products/:id	Público	Obtener producto por ID
+POST	/api/products	Admin	Crear producto
+PUT	/api/products/:id	Admin	Actualizar producto
+DELETE	/api/products/:id	Admin	Eliminar producto
 Clientes
-
-GET /api/customers
-
-POST /api/customers
-
-GET /api/customers/:id
-
-DELETE /api/customers/:id (Solamente si el cliente no tiene ventas registradas)
-
+Método	Endpoint	Descripción
+GET	/api/customers	Listar clientes (con búsqueda)
+POST	/api/customers	Crear cliente
+GET	/api/customers/:id	Obtener cliente por ID
+DELETE	/api/customers/:id	Eliminar cliente (solo si no tiene ventas)
+PATCH	/api/customers/:id/status	Activar/desactivar cliente
 Ventas
-
-POST /api/sales
-
-GET /api/sales/:id
-
+Método	Endpoint	Descripción
+POST	/api/sales	Registrar nueva venta
+GET	/api/sales	Listar ventas (paginado)
+GET	/api/sales/:id	Obtener venta por ID
 ⚠️ Manejo de errores
+Códigos de estado HTTP
+Código	Descripción
+200	OK
+201	Creado
+400	Bad Request (error de validación)
+401	Unauthorized (no autenticado)
+403	Forbidden (sin permisos)
+404	Not Found
+500	Internal Server Error
+Errores personalizados
+Error	Código	Uso
+BadRequestError	400	Validaciones, campos faltantes, duplicados
+UnauthorizedError	401	Token inválido, expirado, credenciales incorrectas
+ForbiddenError	403	Usuario sin permisos suficientes
+NotFoundError	404	Recurso no encontrado
 
-La API maneja los siguientes códigos de estado:
+🧠 Decisiones de arquitectura
+✅ El descuento se calcula únicamente en backend (nunca confiar en el cliente)
 
-200 OK
+✅ Una venta con stock insuficiente se rechaza completamente (transaccional)
 
-201 Created
+✅ purchasesCount se incrementa solo cuando la venta es exitosa
 
-400 Bad Request
+✅ Autorización basada en roles mediante Bearer Token
 
-401 Unauthorized
-
-403 Forbidden
-
-404 Not Found
-
-500 Internal Server Error
-
-Formato de error estándar:
-
-🧠 Decisiones del proyecto
-
--El descuento se calcula únicamente en backend.
-
--Una venta con stock insuficiente se rechaza completamente.
-
--purchasesCount se incrementa solo cuando la venta es exitosa.
-
--Autorización basada en roles mediante Bearer Token.
-
--Validaciones de campos devuelven 422.
-
-Recursos inexistentes devuelven 404.
+✅ Transformación automática snake_case ↔ camelCase vía interceptores
 
 🗂️ Estructura del backend
+text
 backend/
 │
 ├── src/
-│   ├── routes/         → Definición de endpoints (/products, /customers, /sales)
-│   ├── controllers/    → Manejo de requests/responses (HTTP layer)
-│   ├── services/       → Lógica de negocio (descuentos, stock, ventas)
-│   ├── models/         → Modelos/esquemas de base de datos
-│   ├── config/         → Configuración (DB, variables de entorno, incializar datos)
-│   ├── utils/          → Utilidades compartidas (manejo centralizado de errores)
-│   └── server.js       → Punto de entrada: inicializa Express, conecta BD y registra rutas
+│   ├── routes/          → Definición de endpoints
+│   ├── controllers/     → Lógica de requests/responses
+│   ├── models/          → Esquemas de MongoDB
+│   ├── middlewares/     → Auth, roles, error handler
+│   ├── utils/           → Errores personalizados
+│   ├── config/          → Conexión DB, inicialización
+│   └── server.js        → Punto de entrada
 │
-├── package.json
-
-
+├── logs/                → Archivos de error generados automáticamente
+└── package.json
 🗂️ Estructura del frontend
+text
 frontend/
 │
 ├── src/
 │   ├── app/
-│   │   ├── components/      → Componentes reutilizables (UI)
-│   │   ├── pages/           → Vistas principales (ventas, clientes, productos)
-│   │   ├── core/            → Lógica central compartida
-│   │   │   ├── services/    → Servicios HTTP y lógica de acceso a API
-│   │   │   ├── interceptors/→ Interceptores HTTP (ej. token Authorization, Convertidor de snake_case)
-│   │   │   ├── guards/      → Protección de rutas por rol (Admin / Vendor)
-│   │   │   └── types/       → Interfaces y tipos TypeScript
+│   │   ├── components/      → UI reutilizable (toast, modales)
+│   │   ├── pages/           → Vistas principales
+│   │   ├── core/
+│   │   │   ├── services/    → Servicios HTTP
+│   │   │   ├── interceptors/→ Auth, errores, snake-case
+│   │   │   ├── guards/      → Protección de rutas
+│   │   │   └── types/       → Interfaces TypeScript
 │   │   └── app.routes.ts
 │   │
-│   └── styles/
+│   └── styles/              → Estilos globales
 │
 └── angular.json
-
 🚀 Estado del proyecto
-
-Proyecto MVP completamente funcional según el contrato definido:
+✅ MVP completamente funcional según el contrato definido:
 
 Flujo de venta completo
 
 Aplicación correcta de descuentos
 
-Control de stock
+Control de stock en tiempo real
 
-Manejo de errores
+Manejo centralizado de errores
 
 Autenticación y roles implementados
+
+Toasts de notificación para el usuario
+
+Logs automáticos en backend
+
