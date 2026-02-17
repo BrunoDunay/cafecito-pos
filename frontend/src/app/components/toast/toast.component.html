@@ -1,23 +1,27 @@
-<div class="fixed top-4 right-4 z-50 flex flex-col gap-2">
-  @for (notification of notifications; track notification.id) {
-    <div 
-      class="min-w-[300px] p-4 rounded-lg shadow-lg text-white animate-slide-in"
-      [ngClass]="{
-        'bg-green-500': notification.type === 'success',
-        'bg-red-500': notification.type === 'error',
-        'bg-blue-500': notification.type === 'info',
-        'bg-yellow-500': notification.type === 'warning'
-      }"
-    >
-      <div class="flex justify-between items-center gap-4">
-        <span>{{ notification.message }}</span>
-        <button 
-          (click)="removeNotification(notification.id)"
-          class="text-white hover:opacity-70 text-xl"
+<div class="fixed left-64 right-4 top-4 z-50 flex flex-col gap-2 pointer-events-none">
+  <div class="flex justify-end">
+    <div class="w-[350px] pointer-events-auto">
+      @for (notification of notifications; track notification.id) {
+        <div 
+          class="p-4 rounded-lg shadow-lg text-white mb-2 animate-slide-in"
+          [ngClass]="{
+            'bg-green-500': notification.type === 'success',
+            'bg-red-500': notification.type === 'error',
+            'bg-blue-500': notification.type === 'info',
+            'bg-yellow-500': notification.type === 'warning'
+          }"
         >
-          ×
-        </button>
-      </div>
+          <div class="flex justify-between items-center gap-4">
+            <span>{{ notification.message }}</span>
+            <button 
+              (click)="removeNotification(notification.id)"
+              class="text-white hover:opacity-70 text-xl"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      }
     </div>
-  }
+  </div>
 </div>
