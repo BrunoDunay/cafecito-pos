@@ -1,4 +1,3 @@
-// customer.service.ts - Versión con notificación de cambios
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
@@ -24,16 +23,11 @@ export interface ToggleStatusResponse {
 })
 export class CustomerService {
   private apiUrl = `${environment.apiUrl}/customers`;
-  
-  // Subject para notificar cambios en clientes
   private customersChanged = new Subject<void>();
-  
-  // Observable público para suscribirse a cambios
   customersChanged$ = this.customersChanged.asObservable();
 
   constructor(private http: HttpClient) {}
 
-  // Método para notificar que hubo cambios
   private notifyCustomersChanged(): void {
     this.customersChanged.next();
   }
@@ -54,20 +48,14 @@ export class CustomerService {
   // Crear nuevo cliente
   create(customerData: { name: string; email: string; phone?: string }): Observable<Customer> {
     return this.http.post<Customer>(this.apiUrl, customerData).pipe(
-      tap(() => {
-        // Notificar que hubo un cambio (cliente creado)
-        this.notifyCustomersChanged();
-      })
+      tap(() => this.notifyCustomersChanged())
     );
   }
 
   // Eliminar cliente
   delete(id: string): Observable<{ success: boolean; message: string }> {
     return this.http.delete<{ success: boolean; message: string }>(`${this.apiUrl}/${id}`).pipe(
-      tap(() => {
-        // Notificar que hubo un cambio (cliente eliminado)
-        this.notifyCustomersChanged();
-      })
+      tap(() => this.notifyCustomersChanged())
     );
   }
 
@@ -77,10 +65,7 @@ export class CustomerService {
       `${this.apiUrl}/${id}/status`, 
       { is_active: isActive }
     ).pipe(
-      tap(() => {
-        // Notificar que hubo un cambio (estado cambiado)
-        this.notifyCustomersChanged();
-      })
+      tap(() => this.notifyCustomersChanged())
     );
   }
 }

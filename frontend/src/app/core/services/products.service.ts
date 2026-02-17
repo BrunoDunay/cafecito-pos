@@ -39,6 +39,7 @@ export class ProductService {
 
   constructor(private http: HttpClient) {}
 
+  // Obtener todos los productos
   getAll(
     page: number = 1,
     limit: number = 10,
@@ -54,6 +55,7 @@ export class ProductService {
       .pipe(map((res) => responseSchema.parse(res)));
   }
 
+  // Obtener producto por ID
   getById(id: string): Observable<Product> {
     return this.http
       .get(`${this.apiUrl}/${id}`)
@@ -65,6 +67,7 @@ export class ProductService {
       );
   }
 
+  // Crear producto
   create(productData: CreateProductDto): Observable<Product> {
     return this.http
       .post(this.apiUrl, productData)
@@ -76,6 +79,7 @@ export class ProductService {
       );
   }
 
+  // Actualizar producto
   update(id: string, productData: Partial<CreateProductDto>): Observable<Product> {
     return this.http
       .put(`${this.apiUrl}/${id}`, productData)
@@ -87,6 +91,7 @@ export class ProductService {
       );
   }
 
+  // Eliminar producto
   delete(id: string): Observable<{ message: string; productId: string }> {
     return this.http.delete<{ message: string; productId: string }>(
       `${this.apiUrl}/${id}`

@@ -1,7 +1,7 @@
 import User from "../models/User.js";
 import bcrypt from 'bcryptjs';
+import { NotFoundError, BadRequestError } from "../utils/errors.js";
 
-/* Convierte usuario a snake_case */
 const mapUser = (u) => ({
   user_id: u._id,
   name: u.name,
@@ -11,56 +11,105 @@ const mapUser = (u) => ({
   created_at: u.createdAt,
 });
 
-/* Listar usuarios */
-export const getUsers = async (req, res) => {
-  const users = await User.find().select("-password");
-  res.json(users.map(mapUser));
-};
-
-/* Obtener usuario por ID */
-export const getUserById = async (req, res) => {
-  const user = await User.findById(req.params.id).select("-password");
-  if (!user) return res.status(404).json({ message: "User not found" });
-  res.json(mapUser(user));
-};
-
-/* Actualizar usuario */
-export const updateUser = async (req, res) => {
-  const { name, email, role, is_active, password } = req.body;
-  
-  const updateData = { name, email, role, is_active };
-  
-  if (password) {
-    updateData.password = await bcrypt.hash(password, 10);
+export const getUsers = async (req, res, next) => {
+  try {
+    const users = await User.find().select("-password");
+    res.json(users.map(mapUser));
+  } catch (error) {
+    next(error);
   }
-  
-  const user = await User.findByIdAndUpdate(
-    req.params.id,
-    updateData,
-    { new: true }
-  ).select("-password");
-  
-  res.json(mapUser(user));
 };
 
-/* Crear usuario */
-export const createUser = async (req, res) => {
-  const { name, email, password, role } = req.body;
-  
-  const hashedPassword = await bcrypt.hash(password, 10);
-  
-  const user = await User.create({ 
-    name, 
-    email, 
-    password: hashedPassword, 
-    role 
-  });
-  
-  res.status(201).json(mapUser(user));
+export const getUserById = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id).select("-password");
+    
+    if (!user) {
+      throw new NotFoundError("Usuario no encontrado");
+    }
+    
+    res.json(mapUser(user));
+  } catch (error) {
+    if (error.name === 'CastError') {
+      next(new BadRequestError("ID de usuario inválido"));
+    } else {
+      next(error);
+    }
+  }
 };
 
-/* Eliminar usuario */
-export const deleteUser = async (req, res) => {
-  await User.findByIdAndDelete(req.params.id);
-  res.json({ message: "User deleted" });
+export const updateUser = async (req, res, next) => {
+  try {
+    const { name, email, role, is_active, password } = req.body;
+    
+    const updateData = { name, email, role, is_active };
+    
+    if (password) {
+      if (password.length < 6) {
+        throw new BadRequestError("La contraseña debe tener al menos 6 caracteres");
+      }
+      updateData.password = await bcrypt.hash(password, 10);
+    }
+    
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true, runValidators: true }
+    ).select("-password");
+    
+    if (!user) {
+      throw new NotFoundError("Usuario no encontrado");
+    }
+    
+    res.json(mapUser(user));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createUser = async (req, res, next) => {
+  try {
+    const { name, email, password, role } = req.body;
+    
+    if (!name || !email || !password) {
+      throw new BadRequestError("Nombre, email y contraseña son requeridos");
+    }
+    
+    if (password.length < 6) {
+      throw new BadRequestError("La contraseña debe tener al menos 6 caracteres");
+    }
+    
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      throw new BadRequestError("El email ya está registrado");
+    }
+    
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    const user = await User.create({ 
+      name, 
+      email, 
+      password: hashedPassword, 
+      role 
+    });
+    
+    const { password: _, ...userWithoutPassword } = user.toObject();
+    res.status(201).json(mapUser(user));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteUser = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    
+    if (!user) {
+      throw new NotFoundError("Usuario no encontrado");
+    }
+    
+    res.json({ message: "Usuario eliminado correctamente" });
+  } catch (error) {
+    next(error);
+  }
 };

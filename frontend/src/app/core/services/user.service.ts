@@ -33,36 +33,42 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
+  // Obtener todos los usuarios
   getAll(): Observable<User[]> {
     return this.http
       .get(this.apiUrl)
       .pipe(map((res) => userArraySchema.parse(res)));
   }
 
+  // Obtener usuario por ID
   getById(id: string): Observable<User> {
     return this.http
       .get(`${this.apiUrl}/${id}`)
       .pipe(map((res) => userSchema.parse(res)));
   }
 
+  // Crear usuario
   create(userData: CreateUserDto): Observable<User> {
     return this.http
       .post(this.apiUrl, userData)
       .pipe(map((res) => userSchema.parse(res)));
   }
 
+  // Actualizar usuario
   update(id: string, userData: UpdateUserDto): Observable<User> {
     return this.http
       .put(`${this.apiUrl}/${id}`, userData)
       .pipe(map((res) => userSchema.parse(res)));
   }
 
+  // Eliminar usuario
   delete(id: string): Observable<{ message: string; userId: string }> {
     return this.http.delete<{ message: string; userId: string }>(
       `${this.apiUrl}/${id}`
     );
   }
 
+  // Activar/desactivar usuario
   toggleActive(id: string, isActive: boolean): Observable<User> {
     return this.update(id, { isActive });
   }

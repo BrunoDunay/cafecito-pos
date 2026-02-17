@@ -1,8 +1,8 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import { UnauthorizedError, BadRequestError } from '../utils/errors.js';
 
-/* Genera token de acceso */
 const generateAccessToken = (user) =>
   jwt.sign(
     { user_id: user._id, role: user.role },  
@@ -10,24 +10,28 @@ const generateAccessToken = (user) =>
     { expiresIn: '1h' }
   );
 
-/* Genera token de refresco */
 const generateRefreshToken = (userId) =>
   jwt.sign({ user_id: userId }, process.env.JWT_REFRESH_SECRET, {  
     expiresIn: '7d',
   });
 
-/* Iniciar sesión */
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
+    if (!email || !password) {
+      throw new BadRequestError('Email y contraseña son requeridos');
+    }
+
     const user = await User.findOne({ email });
-    if (!user || user.is_active === false)  
-      return res.status(401).json({ message: 'Invalid credentials' });
+    if (!user || user.is_active === false) {
+      throw new UnauthorizedError('Credenciales inválidas');
+    }
 
     const valid = await bcrypt.compare(password, user.password);
-    if (!valid)
-      return res.status(401).json({ message: 'Invalid credentials' });
+    if (!valid) {
+      throw new UnauthorizedError('Credenciales inválidas');
+    }
 
     res.json({
       token: generateAccessToken(user),
@@ -38,44 +42,54 @@ export const login = async (req, res, next) => {
         role: user.role,
       },
     });
-  } catch (e) {
-    next(e);
+  } catch (error) {
+    next(error);
   }
 };
 
-/* Refrescar token */
 export const refreshToken = async (req, res, next) => {
   try {
-    const decoded = jwt.verify(
-      req.body.refresh_token,  
-      process.env.JWT_REFRESH_SECRET
-    );
+    const { refresh_token } = req.body;
 
-    const user = await User.findById(decoded.user_id);  
-    if (!user || !user.is_active)  
-      return res.status(401).json({ message: 'Invalid refresh token' });
+    if (!refresh_token) {
+      throw new BadRequestError('Refresh token es requerido');
+    }
+
+    const decoded = jwt.verify(refresh_token, process.env.JWT_REFRESH_SECRET);
+    const user = await User.findById(decoded.user_id);
+
+    if (!user || !user.is_active) {
+      throw new UnauthorizedError('Refresh token inválido');
+    }
 
     res.json({ token: generateAccessToken(user) });
-  } catch (e) {
-    next(e);
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+      next(new UnauthorizedError('Refresh token inválido o expirado'));
+    } else {
+      next(error);
+    }
   }
 };
 
-/* Obtener usuario autenticado */
 export const me = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.user_id);  
+    const user = await User.findById(req.user.user_id);
+    
+    if (!user) {
+      throw new UnauthorizedError('Usuario no encontrado');
+    }
+
     res.json({
       user_id: user._id,
       email: user.email,
       role: user.role,
     });
-  } catch (e) {
-    next(e);
+  } catch (error) {
+    next(error);
   }
 };
 
-/* Cerrar sesión */
 export const logout = async (req, res) => {
   res.json({ message: 'Logged out successfully' });
 };

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../enviroments/enviroment';
 import { tap, map } from 'rxjs/operators';
-
 import { loginResponseSchema, AuthUser } from '../types/auth';
 import { UserCredentials } from '../types/user';
 import { throwError } from 'rxjs';
@@ -15,36 +14,21 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  // Login
+  // Iniciar sesión
   login(credentials: UserCredentials) {
     return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
       map((response) => loginResponseSchema.parse(response)),
       tap(({ token, refreshToken, user }) => {
-        console.log('🔑 [Auth Service] Login successful');
-        console.log('🔑 [Auth Service] Token:', token ? 'Present' : 'Missing');
-        console.log(
-          '🔑 [Auth Service] Refresh token:',
-          refreshToken ? 'Present' : 'Missing',
-        );
-        console.log('🔑 [Auth Service] User:', user);
-
         localStorage.setItem('token', token);
         if (refreshToken) {
           localStorage.setItem('refreshToken', refreshToken);
         }
         localStorage.setItem('user', JSON.stringify(user));
-
-        // Verifica que se guardó
-        console.log(
-          '🔑 [Auth Service] Saved token to localStorage:',
-          localStorage.getItem('token') ? 'Yes' : 'No',
-        );
       }),
     );
   }
 
-  
-
+  // Refrescar token
   refreshToken() {
     const refreshToken = localStorage.getItem('refreshToken');
     if (!refreshToken) {
@@ -71,7 +55,7 @@ export class AuthService {
     );
   }
 
-  // Logout
+  // Cerrar sesión
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');

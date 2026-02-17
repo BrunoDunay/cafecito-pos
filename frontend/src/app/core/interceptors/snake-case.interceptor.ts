@@ -17,10 +17,7 @@ function toCamelCase(obj: any): any {
       const camelKey = key.replace(/_+([a-z])/g, (_, letter) =>
         letter.toUpperCase()
       );
-      
-      // Caso especial, convertir _id de mongo a id 
       const finalKey = camelKey === 'Id' ? 'id' : camelKey;
-      
       acc[finalKey] = toCamelCase(obj[key]);
       return acc;
     }, {} as any);
@@ -38,7 +35,6 @@ function toSnakeCase(obj: any): any {
         /([A-Z])/g,
         (match) => `_${match.toLowerCase()}`
       );
-      
       acc[snakeKey] = toSnakeCase(obj[key]);
       return acc;
     }, {} as any);
@@ -47,39 +43,24 @@ function toSnakeCase(obj: any): any {
 }
 
 export const snakeCaseInterceptor: HttpInterceptorFn = (req, next) => {
-  console.log('🔵 [Interceptor] Request URL:', req.url);
-
   let modifiedReq = req;
 
-  // Transformar body 
+  // Transformar body de camelCase a snake_case
   if (req.body) {
-    console.log(
-      '🔵 [Interceptor] Request body (original - camelCase):',
-      req.body,
-    );
     const snakeBody = toSnakeCase(req.body);
-    console.log(
-      '🔵 [Interceptor] Request body (transformed - snake_case):',
-      snakeBody,
-    );
     modifiedReq = modifiedReq.clone({ body: snakeBody });
   }
 
-  // Transformar query params
+  // Transformar query params de camelCase a snake_case
   const params = req.params;
   if (params.keys().length > 0) {
-    console.log(
-      '🔵 [Interceptor] Query params (original):',
-      Object.fromEntries(params.keys().map((k) => [k, params.get(k)])),
-    );
-
     let newParams = params;
     let hasChanges = false;
 
     params.keys().forEach((key) => {
       const snakeKey = key.replace(
         /[A-Z]/g,
-        (letter) => `_${letter.toLowerCase()}`,
+        (letter) => `_${letter.toLowerCase()}`
       );
       if (snakeKey !== key) {
         newParams = newParams.delete(key).set(snakeKey, params.get(key)!);
@@ -89,26 +70,13 @@ export const snakeCaseInterceptor: HttpInterceptorFn = (req, next) => {
 
     if (hasChanges) {
       modifiedReq = modifiedReq.clone({ params: newParams });
-      console.log(
-        '🔵 [Interceptor] Query params (transformed):',
-        Object.fromEntries(newParams.keys().map((k) => [k, newParams.get(k)])),
-      );
     }
   }
 
   return next(modifiedReq).pipe(
     map((event) => {
       if (event instanceof HttpResponse && event.body) {
-        console.log(
-          '🟢 [Interceptor] Response body (original - snake_case):',
-          event.body,
-        );
         const transformedBody = toCamelCase(event.body);
-        
-        console.log(
-          '🟢 [Interceptor] Response body (transformed - camelCase):',
-          transformedBody,
-        );
         return event.clone({ body: transformedBody });
       }
       return event;
