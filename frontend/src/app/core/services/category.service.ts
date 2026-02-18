@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { environment } from '../../../enviroments/enviroment';
+import { environment } from '../../../enviroments/environment';
 import { categoryArraySchema, categorySchema } from '../types/category';
 
 @Injectable({
