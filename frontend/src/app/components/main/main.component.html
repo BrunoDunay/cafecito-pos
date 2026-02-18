@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-white">
   <aside
-    class="fixed left-0 top-0 bottom-0 z-30 w-[240px] p-6 bg-[var(--action)] border-r border-black/10 shadow-[0_24px_70px_rgba(0,0,0,.18)] backdrop-blur-[0px]"
+    class="fixed left-0 top-0 bottom-0 z-30 w-[240px] p-6 bg-[var(--edit)] border-r border-black/10 shadow-[0_24px_70px_rgba(0,0,0,.18)] backdrop-blur-[0px]"
   >
     <div class="mb-4 flex items-center justify-center">
       <img
@@ -14,21 +14,21 @@
       <a
         routerLink="/products"
         routerLinkActive="bg-white/70 text-[var(--action)] border-black/10 shadow-[0_10px_24px_rgba(0,0,0,.10)]"
-        class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[#c98a42]"
+        class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[var(--edit)]"
         >Productos</a
       >
 
       <a
         routerLink="/customers"
         routerLinkActive="bg-white/70 text-[var(--action)] border-black/10 shadow-[0_10px_24px_rgba(0,0,0,.10)]"
-        class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[#c98a42]"
+        class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[var(--edit)]"
         >Clientes</a
       >
 
       <a
         routerLink="/sales"
         routerLinkActive="bg-white/70 text-[var(--action)] border-black/10 shadow-[0_10px_24px_rgba(0,0,0,.10)]"
-        class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[#c98a42]"
+        class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[var(--edit)]"
         >Ventas</a
       >
 
@@ -36,7 +36,7 @@
         *ngIf="isAdmin"
         routerLink="/admin/users"
         routerLinkActive="bg-white/70 text-[var(--action)] border-black/10 shadow-[0_10px_24px_rgba(0,0,0,.10)]"
-        class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[#c98a42]"
+        class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[var(--edit)]"
         >Usuarios</a
       >
     </nav>

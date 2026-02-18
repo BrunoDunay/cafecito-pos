@@ -79,7 +79,7 @@
       <button
         (click)="toggleCustomerSelector()"
         class="w-full py-2 text-[12px] font-medium rounded-lg
-               bg-[var(--action)] text-white
+               bg-[var(--edit)] text-white
                hover:opacity-95 transition"
         type="button"
       >
@@ -156,7 +156,7 @@
                     @if (getCustomerDiscount(customer) > 0) {
                       <span
                         class="ml-2 px-2 py-0.5 rounded-full text-[10px] font-bold
-                               bg-[var(--cat-active)] text-white"
+                               bg-[var(--edit)] text-white"
                       >
                         -{{ getCustomerDiscount(customer) }}%
                       </span>
@@ -288,7 +288,7 @@
       <button
         (click)="proceedToCheckout()"
         class="w-full mt-3 py-2 text-[12px] font-semibold rounded-lg
-               bg-[var(--action)] text-white
+               bg-[var(--edit)] text-white
                hover:opacity-95 transition"
         type="button"
       >

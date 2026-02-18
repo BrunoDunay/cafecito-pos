@@ -6,7 +6,7 @@
     @if (isAdmin) {
       <button
         (click)="openCreateModal()"
-        class="bg-[var(--action)] hover:translate-y-[-1px] text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
+        class="bg-[var(--edit)] hover:translate-y-[-1px] text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
           <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6z" />
@@ -20,7 +20,7 @@
   <!-- Tabla de usuarios -->
   <div class="relative overflow-x-auto shadow-md sm:rounded-lg ">
     <table class="w-full text-sm text-left  text-gray-500">
-      <thead class="text-xs text-white uppercase bg-[var(--action)]">
+      <thead class="text-xs text-white uppercase bg-[var(--edit)]">
         <tr>
           <th scope="col" class="px-6 py-3">Nombre</th>
           <th scope="col" class="px-6 py-3">Email</th>
