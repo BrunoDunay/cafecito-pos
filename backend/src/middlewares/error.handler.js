@@ -1,15 +1,19 @@
 // backend/middlewares/error.handler.js
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Crear carpeta de logs si no existe
-const logDir = path.join(__dirname, '../../logs');
-if (!fs.existsSync(logDir)) {
+// Carpeta de logs. En Vercel el disco es de solo lectura salvo /tmp; si no se puede escribir,
+// el error queda solo en la consola (nunca debe tumbar la respuesta).
+const logDir = process.env.VERCEL ? path.join(os.tmpdir(), 'logs') : path.join(__dirname, '../../logs');
+try {
   fs.mkdirSync(logDir, { recursive: true });
+} catch {
+  // sin carpeta de logs
 }
 
 const errorLogPath = path.join(logDir, 'error.log');
@@ -79,7 +83,11 @@ const errorHandler = (err, req, res, next) => {
     params: req.params
   };
 
-  fs.appendFileSync(errorLogPath, JSON.stringify(logEntry) + '\n');
+  try {
+    fs.appendFileSync(errorLogPath, JSON.stringify(logEntry) + '\n');
+  } catch {
+    // no se pudo escribir el archivo; queda el registro en consola
+  }
 
   // Log en consola
   console.error({

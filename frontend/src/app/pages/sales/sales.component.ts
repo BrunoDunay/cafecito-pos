@@ -1,6 +1,6 @@
 // components/sales/sales.component.ts - ACTUALIZAR FORMATO DE MONEDA
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink } from '@angular/router';
 import { SaleService } from '../../core/services/sale.service';
 import { Sale } from '../../core/types/sale';
@@ -9,7 +9,7 @@ import { TicketModalComponent } from './ticket-modal/ticket-modal.component';
 @Component({
   selector: 'app-sales',
   standalone: true,
-  imports: [CommonModule, TicketModalComponent],
+  imports: [TicketModalComponent],
   templateUrl: './sales.component.html',
   styleUrls: ['./sales.component.css']
 })

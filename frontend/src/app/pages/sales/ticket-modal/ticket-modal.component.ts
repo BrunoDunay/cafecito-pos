@@ -1,11 +1,11 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Sale } from '../../../core/types/sale';
 
 @Component({
   selector: 'app-ticket-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './ticket-modal.component.html',
   styleUrls: ['./ticket-modal.component.css']
 })

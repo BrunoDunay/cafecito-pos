@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService, CreateUserDto, createUserSchema } from '../../../core/services/user.service';
 import z from 'zod';
@@ -7,7 +7,7 @@ import z from 'zod';
 @Component({
   selector: 'app-create-user',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './create-user.component.html',
   styleUrls: ['./create-user.component.css']
 })

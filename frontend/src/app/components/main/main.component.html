@@ -1,55 +1,56 @@
 <div class="min-h-screen bg-white">
   <aside
     class="fixed left-0 top-0 bottom-0 z-30 w-[240px] p-6 bg-[var(--edit)] border-r border-black/10 shadow-[0_24px_70px_rgba(0,0,0,.18)] backdrop-blur-[0px]"
-  >
+    >
     <div class="mb-4 flex items-center justify-center">
       <img
         src="/logo.png"
         alt="Cafecito Feliz"
         class="h-auto w-auto object-contain"
-      />
-    </div>
+        />
+      </div>
 
-    <nav class="flex flex-col gap-2">
-      <a
-        routerLink="/products"
-        routerLinkActive="bg-white/70 text-[var(--action)] border-black/10 shadow-[0_10px_24px_rgba(0,0,0,.10)]"
-        class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[var(--edit)]"
-        >Productos</a
-      >
+      <nav class="flex flex-col gap-2">
+        <a
+          routerLink="/products"
+          routerLinkActive="bg-white/70 text-[var(--action)] border-black/10 shadow-[0_10px_24px_rgba(0,0,0,.10)]"
+          class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[var(--edit)]"
+          >Productos</a
+          >
 
-      <a
-        routerLink="/customers"
-        routerLinkActive="bg-white/70 text-[var(--action)] border-black/10 shadow-[0_10px_24px_rgba(0,0,0,.10)]"
-        class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[var(--edit)]"
-        >Clientes</a
-      >
+          <a
+            routerLink="/customers"
+            routerLinkActive="bg-white/70 text-[var(--action)] border-black/10 shadow-[0_10px_24px_rgba(0,0,0,.10)]"
+            class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[var(--edit)]"
+            >Clientes</a
+            >
 
-      <a
-        routerLink="/sales"
-        routerLinkActive="bg-white/70 text-[var(--action)] border-black/10 shadow-[0_10px_24px_rgba(0,0,0,.10)]"
-        class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[var(--edit)]"
-        >Ventas</a
-      >
+            <a
+              routerLink="/sales"
+              routerLinkActive="bg-white/70 text-[var(--action)] border-black/10 shadow-[0_10px_24px_rgba(0,0,0,.10)]"
+              class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[var(--edit)]"
+              >Ventas</a
+              >
 
-      <a
-        *ngIf="isAdmin"
-        routerLink="/admin/users"
-        routerLinkActive="bg-white/70 text-[var(--action)] border-black/10 shadow-[0_10px_24px_rgba(0,0,0,.10)]"
-        class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[var(--edit)]"
-        >Usuarios</a
-      >
-    </nav>
-  </aside>
+              @if (isAdmin) {
+                <a
+                  routerLink="/admin/users"
+                  routerLinkActive="bg-white/70 text-[var(--action)] border-black/10 shadow-[0_10px_24px_rgba(0,0,0,.10)]"
+                  class="px-3 py-2 rounded-lg border border-transparent transition duration-200 text-white hover:bg-white/50 hover:text-[var(--edit)]"
+                  >Usuarios</a
+                  >
+              }
+            </nav>
+          </aside>
 
-  <div
-    class="min-h-screen ml-[240px] mr-[320px] flex flex-col bg-[var(--main-bg)]"
-  >
-    <app-navbar></app-navbar>
-    <main class="flex-1 overflow-y-auto w-full p-0">
-      <router-outlet></router-outlet>
-    </main>
-  </div>
+          <div
+            class="min-h-screen ml-[240px] mr-[320px] flex flex-col bg-[var(--main-bg)]"
+            >
+            <app-navbar></app-navbar>
+            <main class="flex-1 overflow-y-auto w-full p-0">
+              <router-outlet></router-outlet>
+            </main>
+          </div>
 
-  <app-cart class="fixed right-0 top-0 bottom-0 z-40"></app-cart>
-</div>
+          <app-cart class="fixed right-0 top-0 bottom-0 z-40"></app-cart>
+        </div>

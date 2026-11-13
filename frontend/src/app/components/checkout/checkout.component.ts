@@ -1,6 +1,6 @@
 // checkout.component.ts - CON NOMBRE CORRECTO
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
@@ -11,7 +11,7 @@ import { SuccessModalComponent } from '../success/success.component';
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, FormsModule, SuccessModalComponent], // <-- Usar SuccessModalComponent
+  imports: [FormsModule, SuccessModalComponent], // <-- Usar SuccessModalComponent
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.css']
 })

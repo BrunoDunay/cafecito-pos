@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Subscription } from 'rxjs';
 import { UserService, User } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -12,11 +12,10 @@ import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-mo
   selector: 'app-users',
   standalone: true,
   imports: [
-    CommonModule,
     CreateUserComponent,
     EditUserComponent,
-    ConfirmModalComponent,
-  ],
+    ConfirmModalComponent
+],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
 })

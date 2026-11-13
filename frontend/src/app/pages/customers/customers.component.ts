@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import {
   ReactiveFormsModule,
@@ -21,11 +21,10 @@ import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-mo
   templateUrl: './customers.component.html',
   styleUrls: ['./customers.component.css'],
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    ConfirmModalComponent,
-  ],
+    ConfirmModalComponent
+],
 })
 export class CustomersComponent implements OnInit, OnDestroy {
   customers = signal<Customer[]>([]);

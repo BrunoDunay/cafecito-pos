@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService, UpdateUserDto, updateUserSchema } from '../../../core/services/user.service';
 import { User } from '../../../core/types/user';
@@ -8,7 +8,7 @@ import z from 'zod';
 @Component({
   selector: 'app-edit-user',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './edit-user.component.html',
   styleUrls: ['./edit-user.component.css']
 })

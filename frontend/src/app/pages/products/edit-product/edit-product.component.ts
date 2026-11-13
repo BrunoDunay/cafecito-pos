@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductService, CreateProductDto, createProductSchema } from '../../../core/services/products.service';
 import { CategoryService } from '../../../core/services/category.service';
@@ -10,7 +10,7 @@ import z from 'zod';
 @Component({
   selector: 'app-edit-product',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './edit-product.component.html',
   styleUrls: ['./edit-product.component.css']
 })

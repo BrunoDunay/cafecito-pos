@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductService, CreateProductDto, createProductSchema } from '../../../core/services/products.service';
 import { CategoryService } from '../../../core/services/category.service';
@@ -10,7 +10,7 @@ import z from 'zod';
 @Component({
   selector: 'app-create-product',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './create-product.component.html',
   styleUrls: ['./create-product.component.css']
 })
