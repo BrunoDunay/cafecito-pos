@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 
@@ -10,6 +10,7 @@ import { AuthService } from '../../core/services/auth.service';
   standalone: true,
   imports: [RouterOutlet, NavbarComponent, RouterLink, CartComponent],
   templateUrl: './main.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./main.component.css'],
 })
 export class MainComponent {

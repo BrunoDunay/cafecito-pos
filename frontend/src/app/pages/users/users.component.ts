@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 import { UserService, User } from '../../core/services/user.service';
@@ -17,6 +17,7 @@ import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-mo
     ConfirmModalComponent
 ],
   templateUrl: './users.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit, OnDestroy {

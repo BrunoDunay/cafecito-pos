@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../core/services/products.service';
 import { SearchService } from '../../core/services/search.service';
@@ -21,6 +21,7 @@ import { ConfirmModalComponent } from '../../components/confirm-modal/confirm-mo
     ConfirmModalComponent,
   ],
   templateUrl: './products.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./products.component.css'],
 })
 export class ProductsComponent implements OnInit {

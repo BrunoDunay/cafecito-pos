@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { NotificationService, Notification } from '../../core/services/notification.service';
@@ -7,6 +7,7 @@ import { NotificationService, Notification } from '../../core/services/notificat
   selector: 'app-toast',
   standalone: true,
   imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './toast.component.html'
 })
 export class ToastComponent implements OnInit, OnDestroy {

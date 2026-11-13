@@ -1,5 +1,5 @@
 // cart.component.ts - Versión que escucha cambios en clientes
-import { Component, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +13,7 @@ import { Customer } from '../../core/types/customer';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './cart.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./cart.component.css']
 })
 export class CartComponent implements OnInit, OnDestroy {

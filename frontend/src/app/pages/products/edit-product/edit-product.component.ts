@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductService, CreateProductDto, createProductSchema } from '../../../core/services/products.service';
@@ -12,6 +12,7 @@ import z from 'zod';
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './edit-product.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./edit-product.component.css']
 })
 export class EditProductComponent implements OnInit {

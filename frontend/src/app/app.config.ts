@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 import {
   provideHttpClient,
   withInterceptors,
+  withXhr
 } from '@angular/common/http';
 
 import { routes } from './app.routes';
@@ -15,7 +16,7 @@ export const appConfig: ApplicationConfig = {
     // Rutas
     provideRouter(routes),
 
-    provideHttpClient(
+    provideHttpClient(withXhr(), 
       withInterceptors([
         authInterceptor,        
         snakeCaseInterceptor,  

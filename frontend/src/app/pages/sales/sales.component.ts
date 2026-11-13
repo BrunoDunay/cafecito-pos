@@ -1,5 +1,5 @@
 // components/sales/sales.component.ts - ACTUALIZAR FORMATO DE MONEDA
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 
 import { RouterLink } from '@angular/router';
 import { SaleService } from '../../core/services/sale.service';
@@ -11,6 +11,7 @@ import { TicketModalComponent } from './ticket-modal/ticket-modal.component';
   standalone: true,
   imports: [TicketModalComponent],
   templateUrl: './sales.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./sales.component.css']
 })
 export class SalesComponent implements OnInit {

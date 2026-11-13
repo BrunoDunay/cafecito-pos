@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService, UpdateUserDto, updateUserSchema } from '../../../core/services/user.service';
@@ -10,6 +10,7 @@ import z from 'zod';
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './edit-user.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./edit-user.component.css']
 })
 export class EditUserComponent implements OnInit {

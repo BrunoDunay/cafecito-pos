@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 
 import { Sale } from '../../../core/types/sale';
 
@@ -7,6 +7,7 @@ import { Sale } from '../../../core/types/sale';
   standalone: true,
   imports: [],
   templateUrl: './ticket-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./ticket-modal.component.css']
 })
 export class TicketModalComponent implements OnChanges {

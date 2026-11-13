@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -9,6 +9,7 @@ import { SearchService } from '../../core/services/search.service';
   standalone: true,
   imports: [],
   templateUrl: './navbar.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent {

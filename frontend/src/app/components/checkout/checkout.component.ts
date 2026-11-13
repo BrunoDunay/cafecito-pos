@@ -1,5 +1,5 @@
 // checkout.component.ts - CON NOMBRE CORRECTO
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -13,6 +13,7 @@ import { SuccessModalComponent } from '../success/success.component';
   standalone: true,
   imports: [FormsModule, SuccessModalComponent], // <-- Usar SuccessModalComponent
   templateUrl: './checkout.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./checkout.component.css']
 })
 export class CheckoutComponent implements OnInit {

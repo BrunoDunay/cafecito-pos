@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductService, CreateProductDto, createProductSchema } from '../../../core/services/products.service';
@@ -12,6 +12,7 @@ import z from 'zod';
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './create-product.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./create-product.component.css']
 })
 export class CreateProductComponent implements OnInit {
