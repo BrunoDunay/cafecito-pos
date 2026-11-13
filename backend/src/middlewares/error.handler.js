@@ -14,6 +14,19 @@ if (!fs.existsSync(logDir)) {
 
 const errorLogPath = path.join(logDir, 'error.log');
 
+// Campos que nunca deben quedar escritos en el log (p. ej. la contraseña de un login fallido).
+const SENSITIVE_KEYS = /pass(word)?|token|secret|authorization/i;
+
+export const redact = (value) => {
+  if (Array.isArray(value)) return value.map(redact);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([k, v]) => [k, SENSITIVE_KEYS.test(k) ? '[REDACTED]' : redact(v)])
+    );
+  }
+  return value;
+};
+
 const errorHandler = (err, req, res, next) => {
   let statusCode = err.statusCode || 500;
   let message = err.message || 'Error interno del servidor';
@@ -61,8 +74,8 @@ const errorHandler = (err, req, res, next) => {
     statusCode,
     message,
     stack: err.stack,
-    body: req.body,
-    query: req.query,
+    body: redact(req.body),
+    query: redact(req.query),
     params: req.params
   };
 

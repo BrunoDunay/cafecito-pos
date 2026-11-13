@@ -19,11 +19,12 @@ export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
+    // Solo texto: evita que un objeto como { "$ne": null } llegue a la consulta de Mongo.
+    if (typeof email !== 'string' || typeof password !== 'string' || !email || !password) {
       throw new BadRequestError('Email y contraseña son requeridos');
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
     if (!user || user.is_active === false) {
       throw new UnauthorizedError('Credenciales inválidas');
     }
@@ -51,7 +52,7 @@ export const refreshToken = async (req, res, next) => {
   try {
     const { refresh_token } = req.body;
 
-    if (!refresh_token) {
+    if (typeof refresh_token !== 'string' || !refresh_token) {
       throw new BadRequestError('Refresh token es requerido');
     }
 

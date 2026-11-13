@@ -44,8 +44,9 @@ export const createSale = async (req, res, next) => {
     let subtotal = 0;
     const processedItems = [];
 
+    // 1) Validar todos los productos antes de tocar el inventario.
     for (const item of items) {
-      if (!item.product_id || !item.quantity || item.quantity < 1) {
+      if (!item || !item.product_id || !Number.isInteger(item.quantity) || item.quantity < 1) {
         throw new BadRequestError(`Item inválido: ${JSON.stringify(item)}`);
       }
 
@@ -72,13 +73,29 @@ export const createSale = async (req, res, next) => {
         quantity: item.quantity,
         line_total: line_total
       });
-
-      product.stock -= item.quantity;
-      await product.save();
     }
 
-    const finalDiscountPercent = Math.max(0, Math.min(100, discount_percent));
-    const finalDiscountAmount = Math.max(0, discount_amount);
+    // 2) Descontar stock de forma atómica: solo baja si todavía alcanza.
+    //    Si otra venta se lo ganó, se regresa lo ya descontado y no se crea la venta.
+    const decremented = [];
+    for (const item of processedItems) {
+      const updated = await Product.findOneAndUpdate(
+        { _id: item.product_id, stock: { $gte: item.quantity } },
+        { $inc: { stock: -item.quantity } },
+        { returnDocument: 'after' }
+      );
+
+      if (!updated) {
+        for (const done of decremented) {
+          await Product.updateOne({ _id: done.product_id }, { $inc: { stock: done.quantity } });
+        }
+        throw new BadRequestError(`Stock insuficiente para "${item.product_name_snapshot}"`);
+      }
+      decremented.push(item);
+    }
+
+    const finalDiscountPercent = Math.max(0, Math.min(100, Number(discount_percent) || 0));
+    const finalDiscountAmount = Math.max(0, Number(discount_amount) || 0);
     
     const calculatedDiscount = (subtotal * finalDiscountPercent) / 100;
     const totalDiscount = Math.min(subtotal, calculatedDiscount + finalDiscountAmount);
