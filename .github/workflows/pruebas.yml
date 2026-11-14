@@ -35,8 +35,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      # Angular 19 tiene fallas conocidas que solo se corrigen subiendo de versión mayor.
-      # Mientras se hace esa actualización, este paso informa sin bloquear.
-      - name: Reporte de vulnerabilidades del frontend
-        continue-on-error: true
+      - name: Dependencias de producción sin vulnerabilidades altas
         run: npm audit --omit=dev --audit-level=high
