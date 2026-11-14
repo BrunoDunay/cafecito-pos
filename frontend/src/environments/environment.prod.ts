@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://cafecito-pos-backend.onrender.com/api'
+  apiUrl: 'https://cafecito-pos-api.vercel.app/api'
 };
